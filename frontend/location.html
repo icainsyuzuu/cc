@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EcoWaste Manager - Lokasi TPS Terdekat</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+ 
+</head>
+<body>
+
+  <!-- Navbar akan dimuat di sini oleh loadNavbar.js -->
+  <div id="navbar-container"></div>
+
+  <div class="container">
+    <div class="header">
+      <h1>🗺️ Peta Bank Sampah Indonesia</h1>
+      <p>Temukan lokasi bank sampah terdekat di seluruh Indonesia</p>
+    </div>
+
+    <div class="map-container">
+      <div class="controls">
+        <div class="control-group">
+          <label for="provinceFilter">Provinsi:</label>
+          <select id="provinceFilter">
+            <option value="">Semua Provinsi</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="cityFilter">Kota/Kabupaten:</label>
+          <select id="cityFilter">
+            <option value="">Semua Kota</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="searchInput">Cari Bank Sampah:</label>
+          <input type="text" id="searchInput" placeholder="Masukkan nama bank sampah..." />
+        </div>
+      </div>
+
+      <div id="map"></div>
+
+      <div class="info-panel">
+        <div class="stats">
+          <div class="stat-card">
+            <h3 id="totalBanks">0</h3>
+            <p>Total Bank Sampah</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="activeProvinces">0</h3>
+            <p>Provinsi Aktif</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="activeCities">0</h3>
+            <p>Kota/Kabupaten</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  
+
+  <script>
+    const bankSampahData = [
+      {
+        name: "Bank Sampah Melati Bersih",
+        province: "DKI Jakarta",
+        city: "Jakarta Selatan",
+        address: "Jl. Kemang Raya No. 123",
+        lat: -6.2615,
+        lng: 106.8106,
+        contact: "021-12345678",
+        manager: "Ibu Sari Melati",
+        established: "2020",
+        members: 150,
+        wasteTypes: ["Plastik", "Kertas", "Logam", "Kaca"]
+      },
+      {
+        name: "Bank Sampah Hijau Lestari",
+        province: "Jawa Barat",
+        city: "Bandung",
+        address: "Jl. Dipatiukur No. 45",
+        lat: -6.8957,
+        lng: 107.6338,
+        contact: "022-87654321",
+        manager: "Bapak Ahmad Hijau",
+        established: "2019",
+        members: 200,
+        wasteTypes: ["Plastik", "Kertas", "Elektronik"]
+      },
+      {
+        name: "Bank Sampah Kartini",
+        province: "Jawa Tengah",
+        city: "Semarang",
+        address: "Jl. Kartini No. 67",
+        lat: -6.9667,
+        lng: 110.4167,
+        contact: "024-11223344",
+        manager: "Ibu Kartini Sari",
+        established: "2021",
+        members: 180,
+        wasteTypes: ["Plastik", "Kertas", "Organik"]
+      },
+      {
+        name: "Bank Sampah Mahkota",
+        province: "Jawa Timur",
+        city: "Surabaya",
+        address: "Jl. Raya Darmo No. 89",
+        lat: -7.2504,
+        lng: 112.7688,
+        contact: "031-55667788",
+        manager: "Bapak Bambang Mahkota",
+        established: "2018",
+        members: 250,
+        wasteTypes: ["Plastik", "Kertas", "Logam", "Kaca", "Elektronik"]
+      },
+      {
+        name: "Bank Sampah Bali Hijau",
+        province: "Bali",
+        city: "Denpasar",
+        address: "Jl. Sunset Road No. 12",
+        lat: -8.6500,
+        lng: 115.2167,
+        contact: "0361-998877",
+        manager: "I Made Hijau",
+        established: "2020",
+        members: 120,
+        wasteTypes: ["Plastik", "Kertas", "Organik", "Kaca"]
+      },
+      {
+        name: "Bank Sampah Medan Bersih",
+        province: "Sumatera Utara",
+        city: "Medan",
+        address: "Jl. Sisingamangaraja No. 56",
+        lat: 3.5952,
+        lng: 98.6722,
+        contact: "061-44556677",
+        manager: "Ibu Maria Bersih",
+        established: "2019",
+        members: 175,
+        wasteTypes: ["Plastik", "Kertas", "Logam"]
+      },
+      {
+        name: "Bank Sampah Makassar Indah",
+        province: "Sulawesi Selatan",
+        city: "Makassar",
+        address: "Jl. A.P. Pettarani No. 78",
+        lat: -5.1477,
+        lng: 119.4327,
+        contact: "0411-22334455",
+        manager: "Bapak Andi Indah",
+        established: "2021",
+        members: 160,
+        wasteTypes: ["Plastik", "Kertas", "Organik", "Logam"]
+      },
+      {
+        name: "Bank Sampah Yogya Kreatif",
+        province: "DI Yogyakarta",
+        city: "Yogyakarta",
+        address: "Jl. Malioboro No. 34",
+        lat: -7.7956,
+        lng: 110.3695,
+        contact: "0274-66778899",
+        manager: "Ibu Sri Kreatif",
+        established: "2020",
+        members: 140,
+        wasteTypes: ["Plastik", "Kertas", "Kaca", "Elektronik"]
+      }
+    ];
+
+    // Inisialisasi peta Leaflet
+    const map = L.map('map').setView([-2.5489, 118.0149], 5);
+
+    // Tambahkan tile OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Icon kustom untuk marker
+    const customIcon = L.divIcon({
+      html: '<div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">🏦</div>',
+      iconSize: [36, 36],
+      iconAnchor: [18, 18],
+      popupAnchor: [0, -18],
+      className: 'custom-div-icon'
+    });
+
+    let markersLayer = L.layerGroup().addTo(map);
+
+    function createPopupContent(bank) {
+      return `
+        <div class="popup-content">
+          <div class="popup-header">
+            <h3>${bank.name}</h3>
+          </div>
+          <div class="popup-info">
+            <div><span>📍 Alamat:</span> <strong>${bank.address}</strong></div>
+            <div><span>🌆 Kota:</span> <strong>${bank.city}</strong></div>
+            <div><span>📱 Kontak:</span> <strong>${bank.contact}</strong></div>
+            <div><span>👤 Pengelola:</span> <strong>${bank.manager}</strong></div>
+            <div><span>📅 Berdiri:</span> <strong>${bank.established}</strong></div>
+            <div><span>👥 Anggota:</span> <strong>${bank.members} orang</strong></div>
+            <div><span>♻️ Jenis Sampah:</span> <strong>${bank.wasteTypes.join(', ')}</strong></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function addMarkers(data) {
+      markersLayer.clearLayers();
+      data.forEach(bank => {
+        const marker = L.marker([bank.lat, bank.lng], { icon: customIcon })
+          .bindPopup(createPopupContent(bank));
+        markersLayer.addLayer(marker);
+      });
+    }
+
+    function updateStats(data) {
+      const provinces = [...new Set(data.map(bank => bank.province))];
+      const cities = [...new Set(data.map(bank => bank.city))];
+
+      document.getElementById('totalBanks').textContent = data.length;
+      document.getElementById('activeProvinces').textContent = provinces.length;
+      document.getElementById('activeCities').textContent = cities.length;
+    }
+
+    function populateProvinceFilter(data) {
+      const provinces = [...new Set(data.map(bank => bank.province))].sort();
+      const select = document.getElementById('provinceFilter');
+      provinces.forEach(province => {
+        const option = document.createElement('option');
+        option.value = province;
+        option.textContent = province;
+        select.appendChild(option);
+      });
+    }
+
+    function populateCityFilter(data, selectedProvince) {
+      const citySelect = document.getElementById('cityFilter');
+      citySelect.innerHTML = '<option value="">Semua Kota</option>';
+      let cities;
+      if (selectedProvince) {
+        cities = [...new Set(data.filter(bank => bank.province === selectedProvince).map(bank => bank.city))].sort();
+      } else {
+        cities = [...new Set(data.map(bank => bank.city))].sort();
+      }
+      cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    }
+
+    function filterData() {
+      const selectedProvince = document.getElementById('provinceFilter').value;
+      const selectedCity = document.getElementById('cityFilter').value;
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      let filteredData = bankSampahData;
+
+      if (selectedProvince) {
+        filteredData = filteredData.filter(bank => bank.province === selectedProvince);
+      }
+
+      if (selectedCity) {
+        filteredData = filteredData.filter(bank => bank.city === selectedCity);
+      }
+
+      if (searchTerm) {
+        filteredData = filteredData.filter(bank => 
+          bank.name.toLowerCase().includes(searchTerm) ||
+          bank.address.toLowerCase().includes(searchTerm) ||
+          bank.manager.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      addMarkers(filteredData);
+      updateStats(filteredData);
+
+      if (filteredData.length > 0) {
+        const group = new L.featureGroup(filteredData.map(bank => L.marker([bank.lat, bank.lng])));
+        map.fitBounds(group.getBounds().pad(0.1));
+      }
+    }
+
+    document.getElementById('provinceFilter').addEventListener('change', function() {
+      populateCityFilter(bankSampahData, this.value);
+      filterData();
+    });
+    document.getElementById('cityFilter').addEventListener('change', filterData);
+    document.getElementById('searchInput').addEventListener('input', filterData);
+
+    populateProvinceFilter(bankSampahData);
+    populateCityFilter(bankSampahData);
+    addMarkers(bankSampahData);
+    updateStats(bankSampahData);
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+  </script>
+<script src="assets/js/loadNavbar.js"></script> 
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoWaste Manager - Login</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+  
+    <div class="container">
+      <h1>🌱 EcoWaste Manager</h1>
+      <p class="subtitle">Kelola Sampah, Selamatkan Bumi</p>
+      <form id="loginForm">
+        <label for="email">📧 Email/Username</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="user@example.com"
+          required
+        />
+
+        <label for="password">🔒 Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+
+        <button type="submit">🚀 Masuk</button>
+        <button
+          type="button"
+          class="register-btn"
+          onclick="location.href='register.html'"
+        >
+          📝 Daftar
+        </button>
+      </form>
+      <div class="security-note">
+        🔐 <strong>Keamanan:</strong><br />
+        • AES-256 Encryption<br />
+        • JWT Session Token<br />
+        • No Firebase (Custom Auth)
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = e.target.email.value.trim();
+          const password = e.target.password.value.trim();
+
+          if (!email || !password) {
+            alert("Email dan password wajib diisi!");
+            return;
+          }
+
+          try {
+            const res = await fetch("http://localhost:3000/api/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              // Simpan token di localStorage
+              localStorage.setItem("token", data.data.token);
+              alert("Login berhasil!");
+              window.location.href = "dashboard.html";
+            } else {
+              alert("Login gagal: " + (data.message || "Coba lagi"));
+            }
+          } catch (error) {
+            alert("Terjadi kesalahan saat login: " + error.message);
+          }
+        });
+    </script>
+  </body>
+</html>

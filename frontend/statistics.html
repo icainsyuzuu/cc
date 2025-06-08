@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoWaste Manager - Statistik</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div id="navbar-container"></div>
+
+    <div class="screen">
+      <div class="screen-header">📊 Statistik & Analytics</div>
+      <div class="screen-content">
+        <div class="stats-card">
+          <div class="stats-number" id="totalKg">--</div>
+          <div>Total KG Bulan Ini</div>
+        </div>
+
+        <div class="mockup-item">
+          📈 <strong>Grafik Sampah Bulanan</strong><br />
+          <canvas
+            id="monthlyWasteChart"
+            style="max-height: 200px; margin-top: 10px"
+          ></canvas>
+        </div>
+
+        <div class="mockup-item" id="environmentalImpact">
+          🌍 <strong>Environmental Impact:</strong><br />
+          • CO2 Saved: -- kg<br />
+          • Trees Saved: -- pohon<br />
+          • Water Saved: -- liter
+        </div>
+
+        <div class="mockup-item" id="currencyConversion">
+          💰 <strong>Konversi Mata Uang:</strong><br />
+          Mengambil data...
+        </div>
+
+        <div class="mockup-item" id="achievement">
+          🏆 <strong>Achievement:</strong><br />
+          • Green Starter ✅<br />
+          • Eco Warrior ✅<br />
+          • Planet Saver 🔄 (Progress: 75%)
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/loadNavbar.js"></script>
+
+    <script>
+      // Dummy data untuk sampah bulanan
+      const monthlyWasteData = {
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "Mei",
+          "Jun",
+          "Jul",
+          "Agu",
+          "Sep",
+          "Okt",
+          "Nov",
+          "Des",
+        ],
+        datasets: [
+          {
+            label: "KG Sampah",
+            backgroundColor: "#4caf50",
+            borderColor: "#388e3c",
+            data: [10, 12, 9, 14, 13, 15, 12, 13, 16, 14, 18, 20],
+            fill: true,
+            tension: 0.3,
+          },
+        ],
+      };
+
+      const config = {
+        type: "line",
+        data: monthlyWasteData,
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      };
+
+      // Render Chart.js
+      const ctx = document.getElementById("monthlyWasteChart").getContext("2d");
+      const monthlyWasteChart = new Chart(ctx, config);
+
+      // Total KG bulan ini (ambil dari data dummy untuk contoh)
+      document.getElementById("totalKg").textContent =
+        monthlyWasteData.datasets[0].data.reduce((a, b) => a + b, 0).toFixed(1);
+
+      // Environmental Impact (contoh statis, bisa diganti fetch dari API backend)
+      document.getElementById("environmentalImpact").innerHTML = `
+      🌍 <strong>Environmental Impact:</strong><br>
+      • CO2 Saved: 15.2 kg<br>
+      • Trees Saved: 0.8 pohon<br>
+      • Water Saved: 125 liter
+    `;
+
+      // Fungsi fetch konversi mata uang dari API BRI
+      async function fetchCurrencyConversion() {
+        const container = document.getElementById("currencyConversion");
+        try {
+          // Contoh request ke API BRI Valas (sesuaikan endpoint dan headers)
+          const res = await fetch("https://sandbox.bri.co.id/api/valas/rate", {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer your_access_token", // Ganti dengan token asli
+              "Content-Type": "application/json",
+              "X-BRI-API-Key": "your_api_key", // Jika API Key diperlukan
+            },
+          });
+
+          if (!res.ok)
+            throw new Error(`Error fetching currency rates: ${res.status}`);
+
+          const data = await res.json();
+
+          // Misal data.valas berisi array mata uang dengan kursnya
+          // Contoh: [{ currency: "USD", buy: 14500, sell: 14600 }, {...}]
+          // Adjust sesuai struktur response asli
+
+          const valasRates = data.valas || [];
+
+          if (!valasRates.length) {
+            container.textContent = "Data konversi tidak tersedia";
+            return;
+          }
+
+          // Cari rate mata uang tertentu
+          const usd = valasRates.find((c) => c.currency === "USD");
+          const eur = valasRates.find((c) => c.currency === "EUR");
+          const jpy = valasRates.find((c) => c.currency === "JPY");
+
+          container.innerHTML = `
+          💰 <strong>Konversi Mata Uang:</strong><br>
+          Pendapatan bulan ini:<br>
+          • IDR: Rp 75,000<br>
+          • USD: $${usd ? usd.sell.toFixed(2) : "--"}<br>
+          • EUR: €${eur ? eur.sell.toFixed(2) : "--"}<br>
+          • JPY: ¥${jpy ? jpy.sell.toFixed(0) : "--"}
+        `;
+        } catch (error) {
+          container.textContent = "Gagal mengambil data konversi mata uang.";
+          console.error(error);
+        }
+      }
+
+      fetchCurrencyConversion();
+    </script>
+    <script src="assets/js/loadNavbar.js"></script>
+  </body>
+</html>

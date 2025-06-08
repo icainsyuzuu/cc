@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoWaste Manager - Profile</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div id="navbar-container"></div>
+
+    <div class="screen">
+      <div class="screen-header">👤 Profile & Settings</div>
+      <div class="screen-content">
+        <div class="profile-avatar" id="profileAvatar">👤</div>
+
+        <div class="mockup-item" id="profileNameEmailLocation">
+          <strong>Loading...</strong>
+        </div>
+
+        <div class="stats-card" id="profileLevelBadge">
+          <div class="stats-number">-</div>
+          <div>Level</div>
+        </div>
+
+        <div class="mockup-item" id="profileBadges">Loading badges...</div>
+
+        <button class="mockup-button" id="btnChangePhoto">
+          📸 Ganti Foto Profil
+        </button>
+        <button class="mockup-button" id="btnSettings">⚙️ Pengaturan</button>
+
+
+        <!-- Tombol Logout -->
+        <div class="mockup-item">
+          <strong>Keluar Akun</strong><br />
+          <button class="mockup-button secondary" id="logoutBtn">🔓 Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/loadNavbar.js"></script>
+
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Silakan login terlebih dahulu!");
+        window.location.href = "index.html";
+      }
+
+      async function fetchProfile() {
+        try {
+          const res = await fetch("http://localhost:3000/api/user/profile", {
+            headers: { Authorization: "Bearer " + token },
+          });
+          if (!res.ok) throw new Error("Gagal mengambil data profil");
+          const data = await res.json();
+
+          // Contoh struktur data: { name, email, location, level, badges: [] }
+          const nameEmailLoc = document.getElementById(
+            "profileNameEmailLocation"
+          );
+          nameEmailLoc.innerHTML = ` 
+            <strong>${data.name || "Nama Tidak Tersedia"}</strong><br>
+            <small>${data.email || "Email Tidak Tersedia"}</small><br>
+            <small>📍 ${data.location || "Lokasi Tidak Tersedia"}</small>
+          `;
+
+          const levelBadge = document.getElementById("profileLevelBadge");
+          levelBadge.querySelector(".stats-number").textContent =
+            data.level ?? "-";
+          levelBadge.querySelector("div:last-child").textContent =
+            "Eco Warrior";
+
+          const badgesEl = document.getElementById("profileBadges");
+          if (data.badges && data.badges.length > 0) {
+            badgesEl.innerHTML =
+              "🏅 <strong>Badges Collected:</strong><br>" +
+              data.badges.map((b) => b).join(" | ");
+          } else {
+            badgesEl.textContent = "Belum ada badges";
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      fetchProfile();
+
+      // Contoh tombol aksi
+      document
+        .getElementById("btnChangePhoto")
+        .addEventListener("click", () => {
+          alert("Fitur ganti foto belum tersedia");
+        });
+
+      document.getElementById("btnSettings").addEventListener("click", () => {
+        alert("Fitur pengaturan belum tersedia");
+      });
+
+      // Fungsi Logout
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

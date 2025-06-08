@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoWaste Manager - Dashboard</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <!-- Tempat navbar akan dimuat -->
+    <div id="navbar-container"></div>
+    <div class="container">
+      <div class="header">
+        <h1>🌱 Selamat Datang di EcoWaste Manager</h1>
+        <p>Mari kelola sampah dengan bijak dan ramah lingkungan</p>
+      </div>
+
+      <div class="stats-card">
+        <div class="stats-number" id="ecoPoints">--</div>
+        <div class="stats-label">EcoPoints Anda</div>
+      </div>
+
+      <div class="buttons-row">
+        <button class="mockup-button" id="findTPS">📍 Cari TPS Terdekat</button>
+        <button class="mockup-button secondary" id="logWaste">
+          ♻️ Log Sampah Baru
+        </button>
+      </div>
+
+      <div class="notifications" id="notifications">
+        <strong>🔔 Notifikasi Terbaru:</strong>
+        <p>Loading...</p>
+      </div>
+
+      <!-- Time Display Section -->
+      <div class="time-container">
+        <div class="time-box" id="wib">
+          <h3>WIB (Waktu Indonesia Barat)</h3>
+          <div class="time" id="wibTime">Loading...</div>
+        </div>
+        <div class="time-box" id="wita">
+          <h3>WITA (Waktu Indonesia Tengah)</h3>
+          <div class="time" id="witaTime">Loading...</div>
+        </div>
+        <div class="time-box" id="wit">
+          <h3>WIT (Waktu Indonesia Timur)</h3>
+          <div class="time" id="witTime">Loading...</div>
+        </div>
+        <div class="time-box" id="london">
+          <h3>London</h3>
+          <div class="time" id="londonTime">Loading...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      // Update time every second for Real-Time Clock
+      function updateTime() {
+        const now = new Date();
+
+        // WIB: UTC+7
+        const wib = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
+        document.getElementById("wibTime").textContent = wib.toLocaleTimeString();
+
+        // WITA: UTC+8
+        const wita = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Makassar" }));
+        document.getElementById("witaTime").textContent = wita.toLocaleTimeString();
+
+        // WIT: UTC+9
+        const wit = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jayapura" }));
+        document.getElementById("witTime").textContent = wit.toLocaleTimeString();
+
+        // London: UTC+0
+        const london = new Date(now.toLocaleString("en-US", { timeZone: "Europe/London" }));
+        document.getElementById("londonTime").textContent = london.toLocaleTimeString();
+      }
+
+      // Update every second
+      setInterval(updateTime, 1000);
+
+      // Initial update
+      updateTime();
+
+      // Dashboard functionality
+      document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          alert("Silakan login terlebih dahulu!");
+          window.location.href = "index.html";
+        }
+
+        async function fetchDashboardData() {
+          try {
+            const res = await fetch(
+              "http://localhost:3000/api/user/dashboard",
+              {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              }
+            );
+
+            if (!res.ok) throw new Error("Gagal mengambil data dashboard");
+
+            const data = await res.json();
+
+            document.getElementById("ecoPoints").textContent =
+              data.ecoPoints ?? "0";
+
+            const notifContainer = document.getElementById("notifications");
+            notifContainer.innerHTML =
+              "<strong>🔔 Notifikasi Terbaru:</strong>";
+            if (data.notifications && data.notifications.length) {
+              data.notifications.forEach((note) => {
+                const p = document.createElement("p");
+                p.textContent = "• " + note;
+                notifContainer.appendChild(p);
+              });
+            } else {
+              notifContainer.innerHTML += "<p>Belum ada notifikasi</p>";
+            }
+          } catch (err) {
+            alert(err.message);
+          }
+        }
+
+        fetchDashboardData();
+
+        async function findNearbyTPS() {
+          if (!navigator.geolocation) {
+            alert("Geolocation tidak didukung oleh browser Anda.");
+            return;
+          }
+
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+
+              try {
+                const response = await fetch(
+                  `http://localhost:3000/api/locations/nearby?lat=${lat}&lon=${lon}`,
+                  {
+                    headers: {
+                      Authorization: "Bearer " + token,
+                    },
+                  }
+                );
+
+                if (!response.ok)
+                  throw new Error("Gagal mendapatkan lokasi TPS terdekat");
+
+                const data = await response.json();
+
+                if (data.success && data.data && data.data.length > 0) {
+                  let message = "TPS Terdekat:\n";
+                  data.data.forEach((loc, i) => {
+                    message += `${i + 1}. ${
+                      loc.name
+                    } - Jarak: ${loc.distance.toFixed(2)} km\n`;
+                  });
+                  alert(message);
+                } else {
+                  alert("Tidak ditemukan TPS dalam radius 5 km.");
+                }
+              } catch (err) {
+                alert(err.message);
+              }
+            },
+            (error) => {
+              alert("Gagal mendapatkan lokasi Anda: " + error.message);
+            }
+          );
+        }
+
+        document
+          .getElementById("findTPS")
+          .addEventListener("click", findNearbyTPS);
+
+        document
+          .getElementById("logWaste")
+          .addEventListener("click", () =>
+            {
+    window.location.href = 'waste_record.html';
+           });
+      });
+    </script>
+
+    <!-- Load loadNavbar.js untuk muat navbar -->
+    <script src="assets/js/loadNavbar.js"></script>
+  </body>
+</html>
