@@ -11,9 +11,17 @@ const Location = sequelize.define('Location', {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
-  type: {
-    type: DataTypes.ENUM('TPS', 'Bank Sampah', 'Recycling Center', 'Pickup Point'), // Sesuaikan enum
+  province: {
+    type: DataTypes.STRING(50),
     allowNull: false,
+  },
+  city: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
   },
   latitude: {
     type: DataTypes.DOUBLE,
@@ -23,26 +31,13 @@ const Location = sequelize.define('Location', {
     type: DataTypes.DOUBLE,
     allowNull: false,
   },
-  address: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-  },
-  operating_hours: {
-    type: DataTypes.STRING(100),
-    allowNull: true,
-  },
-  contact: {
-    type: DataTypes.STRING(50),
-    allowNull: true,
-  },
-  created_at: {
-    type: DataTypes.DATE,
+  waste_type: {
+    type: DataTypes.ENUM('Plastik', 'Kertas', 'Logam', 'Organik', 'Elektronik', 'B3'),
     allowNull: false,
-    defaultValue: DataTypes.NOW,
   },
 }, {
   tableName: 'locations',
-  timestamps: false, // karena kolom created_at manual
+  timestamps: true, // karena kolom created_at manual
   underscored: true,
 });
 

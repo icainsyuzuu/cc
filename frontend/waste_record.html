@@ -423,10 +423,6 @@
             />
             <div class="weight-display" id="weightDisplay">1.5 kg</div>
           </div>
-          <div class="sensor-indicator">
-            <div class="sensor-dot"></div>
-            <div>📱 Sensor Accelerometer: Aktif (Shake untuk auto-detect berat)</div>
-          </div>
           <div class="form-group">
             <label class="form-label">📸 Foto Sampah (Opsional):</label>
             <div class="upload-area" id="uploadArea">
@@ -462,27 +458,16 @@
             <div class="step">4. Konfirmasi</div>
           </div>
           <div class="form-group">
-            <label class="form-label">📍 Lokasi Saat Ini:</label>
-            <div class="location-display" id="currentLocation">
-              🌍 Menggunakan GPS...<br />
-              <strong>Jl. Sudirman No. 123, Jakarta Pusat</strong><br />
-              <small>Akurasi: ±5 meter</small>
-            </div>
             <button class="btn-secondary" id="refreshLocation">🔄 Refresh Lokasi</button>
           </div>
-          <div class="form-group">
+          <div class="form-group" >
             <label class="form-label">🗑️ Pilih Metode Pembuangan:</label>
             <div class="tabs" id="disposalTabs">
-              <button class="tab active" data-method="rumah">🏠 Di Rumah</button>
-              <button class="tab" data-method="tps">🗑️ TPS Terdekat</button>
-              <button class="tab" data-method="bank">🏦 Bank Sampah</button>
+              <button class="tab active" data-method="bank" disabled>🏦 Bank Sampah</button>
+              <button class="tab" data-method="rumah" disabled>🏠 Di Rumah</button>
+              <button class="tab" data-method="tps" disabled>🗑️ TPS Terdekat</button>
             </div>
-            <div class="info-card" id="disposalInfo">
-              <strong>🏠 Pembuangan di Rumah</strong><br />
-              • Sampah akan dikategorikan dalam tempat sampah rumah<br />
-              • Menunggu jadwal pengambilan sampah<br />
-              • EcoPoints: Normal (7 points)
-            </div>
+            <div class="info-card" id="disposalInfo"></div>
           </div>
           <div class="form-group">
             <label class="form-label" for="scheduleSelect">⏰ Jadwal Pembuangan:</label>
@@ -655,7 +640,7 @@ submitLogBtn.addEventListener('click', async () => {
     category: 'Plastik',
     description: 'Botol plastik bekas minuman',
     weight: 1.5,
-    disposalMethod: 'rumah',
+    disposalMethod: 'bank',
     schedule: 'Sekarang',
     location: 'Jl. Sudirman No. 123, Jakarta Pusat',
     points: 7,

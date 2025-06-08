@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const wasteRecordRoutes = require('./routes/wasteRecordRoutes');
+const associateModels = require('./config/assoc.js');
 require('dotenv').config();
 
 const app = express();
@@ -28,13 +28,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connected...');
-    await sequelize.sync();
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-})();
+
+// Start the server and associate models
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  associateModels(); // Initialize model associations
+});
