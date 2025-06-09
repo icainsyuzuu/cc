@@ -6,12 +6,14 @@ import { userRouter } from './route/userRoute.js';
 import { authRouter } from './route/authRoute.js';
 import { locRouter } from './route/locationRoute.js';
 import { WasteRecordRouter } from './route/wasteRecordRoute.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/api', (req, res) => {
     res.send('Hello from Eco Waste backend!');
