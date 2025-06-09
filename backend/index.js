@@ -12,13 +12,23 @@ import cookieParser from 'cookie-parser';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5000",
+    "http://localhost:3000",
+    // "https://a-09-450915.uc.r.appspot.com"
+];
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
 app.get('/api', (req, res) => {
     res.send('Hello from Eco Waste backend!');
-    
+
 });
 app.use('/api', authRouter);
 app.use('/api/user', userRouter);
@@ -28,7 +38,7 @@ app.use('/api/waste-record', WasteRecordRouter);
 
 
 app.listen(PORT, () => {
-console.log(`Server is running on port ${PORT}`);
-console.log('Link: http://localhost:' + PORT);
-associateModels(); // Initialize model associations
+    console.log(`Server is running on port ${PORT}`);
+    console.log('Link: http://localhost:' + PORT);
+    associateModels(); // Initialize model associations
 });
