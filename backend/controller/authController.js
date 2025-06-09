@@ -45,7 +45,7 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
     try {
-        console.log('Request body:', req.body); // Debug untuk cek body request
+        // console.log('Request body:', req.body); // Debug untuk cek body request
 
         const { email, password } = req.body;
 
@@ -76,7 +76,7 @@ async function loginUser(req, res) {
         }
 
         const userPlain = user.toJSON();
-        const { password: _, refreshToken: __, ...safeUserData } = userPlain; // Hapus password dan refreshToken dari data yang akan dikirim
+        const { password: _, refresh_token: __, ...safeUserData } = userPlain; // Hapus password dan refreshToken dari data yang akan dikirim
         console.log('Safe user data:', safeUserData); // Debug untuk cek data user yang aman
 
         const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
