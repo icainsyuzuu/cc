@@ -41,7 +41,7 @@ const associateModels = () => {
             as: 'waste'
         });
         // Sync associations
-        sequelize.sync({ alter: true })
+        sequelize.sync()
             .then(() => {
                 console.log("Associations have been established and database synced successfully.");
             })
