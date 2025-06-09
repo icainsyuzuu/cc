@@ -21,7 +21,7 @@ app.get('/api', (req, res) => {
     
 });
 app.use('/api', authRouter);
-// app.use('/api/user', userRouter);
+app.use('/api/user', userRouter);
 app.use('/api', locRouter);
 app.use('/api/waste', wasteRouter);
 app.use('/api/waste-record', WasteRecordRouter);

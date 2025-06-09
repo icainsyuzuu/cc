@@ -48,7 +48,7 @@ async function getProfile(req, res) {
                 id: user.id,
                 username: user.username,
                 email: user.email,
-                profile_image: user.profile_image || 'default-avatar.png', // Default avatar if none exists
+                profile_image: user.profile_image,
                 eco_points: user.eco_points,
             }
         });
@@ -58,7 +58,48 @@ async function getProfile(req, res) {
     }
 }
 
+async function updateProfile(req, res) {
+  try {
+    const userId = req.user.userId; // dari authMiddleware
+    const { username, email } = req.body;
+
+    // Ambil user saat ini
+    const currentUser = await User.findByPk(userId);
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: 'User tidak ditemukan' });
+    }
+
+    // Cek apakah email baru sudah digunakan oleh user lain
+    if (email && email !== currentUser.email) {
+      const existingEmailUser = await User.findOne({ where: { email } });
+      if (existingEmailUser) {
+        return res.status(409).json({ success: false, message: 'Email sudah digunakan oleh user lain' });
+      }
+    }
+
+    // Update data
+    await currentUser.update({ username, email });
+
+    return res.json({
+      success: true,
+      message: 'Profil berhasil diperbarui',
+      user: {
+        id: currentUser.id,
+        username: currentUser.username,
+        email: currentUser.email,
+        profile_image: currentUser.profile_image,
+        eco_points: currentUser.eco_points
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    return res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
+  }
+}
+
+
 export {
     getDashboard,
-    getProfile
+    getProfile,
+    updateProfile
 }
