@@ -1,41 +1,36 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
+import db from "../config/db.js";
+import { Sequelize } from "sequelize";
 
-const Waste = sequelize.define('Waste', {
+const Waste = db.define("Waste", {
     id: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     type: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
     },
     price: {
-        type: DataTypes.FLOAT,
+        type: Sequelize.FLOAT,
         allowNull: false,
     },
     recyclable: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         allowNull: false,
     },
     eco_points: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         allowNull: false,
     },
     tips: {
-        type: DataTypes.TEXT,
+        type: Sequelize.TEXT,
         allowNull: true,
     },
     description: {
-        type: DataTypes.TEXT,
+        type: Sequelize.TEXT,
         allowNull: true,
     },
-}, {
-    tableName: 'wastes',
-    timestamps: true, // karena kolom created_at manual
-    underscored: true,
 });
 
-module.exports = Waste;
-
+export { Waste };

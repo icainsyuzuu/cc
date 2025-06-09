@@ -1,9 +1,11 @@
-//use required to import models
-const  Location = require('../model/location.js');
-const WasteRecord = require('../model/wasteRecord.js');
-const User = require('../model/user.js');
-const sequelize = require('./db.js');
-const Waste = require('../model/waste.js');
+import { Location } from "../model/location.js";
+import { User } from "../model/user.js";
+import { Waste } from "../model/waste.js";
+import { WasteRecord } from "../model/waste_record.js";
+import db from "./db.js";
+import { Sequelize } from "sequelize";
+
+
 const associateModels = () => {
     try {
         // User associations
@@ -40,8 +42,20 @@ const associateModels = () => {
             foreignKey: 'waste_id',
             as: 'waste'
         });
+
+        Waste.hasMany(Location, {
+            foreignKey: 'waste_id',
+            as: 'Location',
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        });
+        Location.belongsTo(Waste, {
+            foreignKey: 'waste_id',
+            as: 'waste'
+        });
+
         // Sync associations
-        sequelize.sync()
+        db.sync({ alter: true })
             .then(() => {
                 console.log("Associations have been established and database synced successfully.");
             })
@@ -54,4 +68,4 @@ const associateModels = () => {
     }
 }
 
-module.exports = associateModels;
+export { associateModels };

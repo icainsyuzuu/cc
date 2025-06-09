@@ -1,11 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const locationRoutes = require('./routes/locationRoutes');
-const wasteRecordRoutes = require('./routes/wasteRecordRoutes');
-const associateModels = require('./config/assoc.js');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import "dotenv/config";
+import { associateModels } from './config/assoc.js';
+import { userRouter } from './route/userRoute.js';
+import { authRouter } from './route/authRoute.js';
+import { locRouter } from './route/locationRoute.js';
+import { WasteRecordRouter } from './route/wasteRecordRoute.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,24 +13,12 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/api', authRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api', locationRoutes);
-app.use('/api/waste', wasteRecordRoutes);
+app.use('/api', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api', locRouter);
+app.use('/api/waste', WasteRecordRouter);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    success: true, 
-    message: 'EcoWaste Manager API is running',
-    timestamp: new Date().toISOString()
-  });
-});
-
-
-// Start the server and associate models
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  associateModels(); // Initialize model associations
-});
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+        associateModels(); // Initialize model associations
+    });
