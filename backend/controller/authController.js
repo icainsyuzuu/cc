@@ -1,50 +1,45 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../model/user.js';
+import dotenv from "dotenv";
+dotenv.config();
+
+
 
 async function registerUser(req, res) {
+    const { username, email, password } = req.body;
+
+    // Cek apakah semua field diisi
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Cek apakah email sudah terdaftar
     try {
-        const { username, email, password } = req.body;
-
-        // Validasi input wajib diisi
-        if (!username || !email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Semua field (username, email, password) harus diisi',
-            });
-        }
-
-        // Cek apakah email sudah terdaftar
         const existingUser = await User.findOne({ where: { email } });
         if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: 'Email sudah terdaftar',
-            });
+            return res.status(409).json({ message: "Email already exists" });
         }
 
-        // Hash password dengan bcrypt
-        const salt = await bcrypt.genSalt(10);
-        const password_hash = await bcrypt.hash(password, salt);
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Simpan user baru ke database
+        // Simpan user baru
         const newUser = await User.create({
             username,
             email,
-            password_hash,
+            password_hash: hashedPassword,
         });
 
         return res.status(201).json({
-            success: true,
-            message: 'User berhasil didaftarkan',
-            data: { userId: newUser.id },
+            status: "success",
+            message: "User registered successfully",
+            data: { id: newUser.id, username: newUser.username, email: newUser.email }
         });
+
     } catch (error) {
-        console.error('Register error:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Terjadi kesalahan server',
-        });
+        console.error("Error registering user:", error);
+        return res.status(500).json({ message: error.message });
     }
 }
 
@@ -65,7 +60,7 @@ async function loginUser(req, res) {
         // Cari user berdasarkan email
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
                 message: 'Email atau password salah',
             });
@@ -74,23 +69,52 @@ async function loginUser(req, res) {
         // Cek kecocokan password
         const isMatch = await bcrypt.compare(password, user.password_hash);
         if (!isMatch) {
-            return res.status(400).json({
+            return res.status(401).json({
                 success: false,
                 message: 'Email atau password salah',
             });
         }
 
-        // Buat JWT token
-        const token = jwt.sign(
+        const userPlain = user.toJSON();
+        const { password: _, refreshToken: __, ...safeUserData } = userPlain; // Hapus password dan refreshToken dari data yang akan dikirim
+        console.log('Safe user data:', safeUserData); // Debug untuk cek data user yang aman
+
+        const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+        const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+        const accessToken = jwt.sign(
             { userId: user.id, username: user.username, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
+            accessTokenSecret,
+            { expiresIn: '1d' } // Set access token expiration to 1 day
         );
 
-        return res.json({
+        const refreshToken = jwt.sign(
+            safeUserData,
+            refreshTokenSecret,
+            { expiresIn: '7d' } // Set refresh token expiration to 7 days
+        );
+
+        // Simpan refresh token ke database
+        await User.update(
+            { refresh_token: refreshToken },
+            { where: { id: user.id } }
+        );
+
+        res.cookie('refresh_token', refreshToken, {
+            httpOnly: true,
+            sameSite: 'none',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            secure: true // Set to true if using HTTPS
+        });
+
+        res.status(200).json({
             success: true,
             message: 'Login berhasil',
-            data: { token },
+            accessToken: accessToken,
+            data: {
+                userId: user.id,
+                username: user.username,
+                email: user.email
+            }
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -101,7 +125,42 @@ async function loginUser(req, res) {
     }
 }
 
+async function logout(req, res) {
+    try {
+        // ambil refresh token dari cookie
+        const refreshToken = req.cookies.refresh_token;
+        if (!refreshToken) {
+            return res.status(401).json({ message: "No refresh token found" });
+        }
+
+        const user = await UserModel.findOne({ where: { refresh_token: refreshToken } });
+
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        const userId = user.id;
+
+        // delete refresh token di database
+        await UserModel.update(
+            { refresh_token: null },
+            { where: { id: userId } }
+        );
+
+        res.clearCookie("refresh_token");
+
+        return res.status(200).json({
+            status: "success",
+            message: "User logged out successfully"
+        });
+    } catch (error) {
+        console.error("Error logging out user:", error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
 export {
     registerUser,
-    loginUser
+    loginUser,
+    logout
 }

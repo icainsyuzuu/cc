@@ -1,7 +1,7 @@
 import db from "../config/db.js";
 import { Sequelize } from "sequelize";
 
-const Location = db.define("Location", {
+const Location = db.define("locations", {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,

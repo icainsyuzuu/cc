@@ -13,12 +13,15 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+app.get('/api', (req, res) => {
+    res.send('Hello from Eco Waste backend!');
+});
 app.use('/api', authRouter);
 app.use('/api/user', userRouter);
 app.use('/api', locRouter);
 app.use('/api/waste', WasteRecordRouter);
-
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-        associateModels(); // Initialize model associations
-    });
+app.listen(PORT, () => {
+console.log(`Server is running on port ${PORT}`);
+console.log('Link: http://localhost:' + PORT);
+associateModels(); // Initialize model associations
+});

@@ -3,7 +3,6 @@ import { User } from "../model/user.js";
 import { Waste } from "../model/waste.js";
 import { WasteRecord } from "../model/waste_record.js";
 import db from "./db.js";
-import { Sequelize } from "sequelize";
 
 
 const associateModels = () => {
@@ -55,7 +54,7 @@ const associateModels = () => {
         });
 
         // Sync associations
-        db.sync({ alter: true })
+        db.sync()
             .then(() => {
                 console.log("Associations have been established and database synced successfully.");
             })

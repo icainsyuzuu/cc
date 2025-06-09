@@ -1,7 +1,7 @@
 import db from "../config/db.js";
 import { Sequelize } from "sequelize";
 
-const WasteRecord = db.define("WasteRecord", {
+const WasteRecord = db.define("wasterecords", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,

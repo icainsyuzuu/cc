@@ -1,7 +1,7 @@
 import db from "../config/db.js";
 import { Sequelize } from "sequelize";
 
-const User = db.define("User", {
+const User = db.define("users", {
     username: {
         type: Sequelize.STRING(50),
         allowNull: false,
@@ -24,6 +24,10 @@ const User = db.define("User", {
     eco_points: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
+    },
+    refresh_token: {
+        type: Sequelize.TEXT,
+        allowNull: true,
     },
 });
 
