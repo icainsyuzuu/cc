@@ -1,6 +1,7 @@
 import express from 'express';
 import {
-    getNearbyLocations
+    getNearbyLocations,
+    getAllLocations
 } from '../controller/locationController.js';
 import {
     authMiddleware
@@ -8,6 +9,7 @@ import {
 
 const locRouter = express.Router();
 locRouter.use(authMiddleware);
+locRouter.get('/locations', getAllLocations);
 locRouter.get('/locations/nearby', getNearbyLocations);
 
 // export default locRouter;

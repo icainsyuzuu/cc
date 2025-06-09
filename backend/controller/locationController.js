@@ -1,6 +1,23 @@
 import { Location } from '../model/location.js';
 import { Sequelize } from 'sequelize';
 
+async function getAllLocations(req, res) {
+    try {
+        const locations = await Location.findAll({
+            attributes: ['id', 'name', 'province', 'city', 'address', 'latitude', 'longitude', 'waste_type']
+        });
+
+        if (locations.length === 0) {
+            return res.status(404).json({ success: false, message: 'Tidak ada lokasi ditemukan' });
+        }
+
+        res.json({ success: true, data: locations });
+    } catch (error) {
+        console.error("Error fetching locations:", error);
+        res.status(500).json({ success: false, message: 'Kesalahan server' });
+    }
+}
+
 async function getNearbyLocations(req, res) {
     const { lat, lon, radius = 5 } = req.query; // radius default 5 km
 
@@ -41,5 +58,6 @@ async function getNearbyLocations(req, res) {
 }
 
 export {
-    getNearbyLocations
+    getNearbyLocations,
+    getAllLocations
 };
