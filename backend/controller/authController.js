@@ -4,8 +4,6 @@ import { User } from '../model/user.js';
 import dotenv from "dotenv";
 dotenv.config();
 
-
-
 async function registerUser(req, res) {
     const { username, email, password } = req.body;
 

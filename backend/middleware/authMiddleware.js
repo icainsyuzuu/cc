@@ -3,29 +3,35 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const authMiddleware = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers["authorization"];
+    console.log("Auth header:", authHeader);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    let token;
+
+    // Ambil token dari format "Bearer <token>"
+    if (authHeader) token = authHeader.split(" ")[1];
+
+    // Kalau token gak ada
+    if (!token) {
         return res.status(401).json({
-            success: false,
-            message: 'Token tidak ditemukan',
+            status: "Error",
+            message: "Token tidak ada",
         });
     }
 
-    const token = authHeader.split(' ')[1];
+    // Verifikasi token
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
+        if (error) {
+            return res.status(403).json({
+                status: "Error",
+                message: "Access token tidak valid",
+            });
+        }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // simpan payload token (userId, username, email, dll)
-        // console.log('Token decoded:', decoded); // Uncomment untuk debug token
+        req.user = decoded;
+        console.log("Decoded token:", decoded);
         next();
-    } catch (error) {
-        console.error('JWT verify error:', error);
-        return res.status(401).json({
-            success: false,
-            message: 'Token tidak valid',
-        });
-    }
+    });
 };
 
 export { authMiddleware };

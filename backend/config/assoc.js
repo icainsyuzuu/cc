@@ -1,7 +1,7 @@
 import { Location } from "../model/location.js";
 import { User } from "../model/user.js";
 import { Waste } from "../model/waste.js";
-import { WasteRecord } from "../model/waste_record.js";
+import { WasteRecord } from "../model/wasteRecord.js";
 import db from "./db.js";
 
 
@@ -54,7 +54,7 @@ const associateModels = () => {
         });
 
         // Sync associations
-        db.sync()
+        db.sync() // Use alter: true for development, change to force: true for production if needed
             .then(() => {
                 console.log("Associations have been established and database synced successfully.");
             })

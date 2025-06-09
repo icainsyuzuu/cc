@@ -8,7 +8,6 @@ import {
 
 const locRouter = express.Router();
 locRouter.use(authMiddleware);
-
 locRouter.get('/locations/nearby', getNearbyLocations);
 
 // export default locRouter;
