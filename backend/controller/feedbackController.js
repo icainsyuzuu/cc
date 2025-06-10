@@ -25,21 +25,18 @@ const getFeedbackByUserId = async (req, res) => {
 };
 
 const getFeedbacksById = async (req, res) => {
-    const {
-        id
-    } = req.params;
+    const { id } = req.params;
 
     try {
-        const feedbacks = await Feedback.findByPk(id, {
+        const feedback = await Feedback.findByPk(id, {
             include: [{
                 model: User,
                 as: "user", // sesuai alias
                 attributes: ["username", "email"],
-            },
-            ],
+            }],
         });
 
-        if (!record) {
+        if (!feedback) {
             return res.status(404).json({
                 status: "failed",
                 message: "Data tidak ditemukan"
@@ -48,7 +45,7 @@ const getFeedbacksById = async (req, res) => {
 
         res.json({
             status: "success",
-            data: record
+            data: feedback
         });
     } catch (error) {
         console.error("Get Feedback error:", error);
@@ -58,6 +55,7 @@ const getFeedbacksById = async (req, res) => {
         });
     }
 };
+
 
 // Fungsi untuk membuat feedback baru
 const createFeedback = async (req, res) => {
