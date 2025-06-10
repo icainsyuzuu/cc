@@ -13,6 +13,7 @@
             padding: 16px;
             margin-bottom: 16px;
             background-color: #f9f9f9;
+            text-align: left;
         }
 
         .history-card img {
@@ -44,6 +45,10 @@
         .delete-btn:hover {
             background-color: #c0392b;
         }
+
+        .container {
+        text-align: left;
+    }
     </style>
 </head>
 
@@ -62,6 +67,19 @@
     <script type="module">
         import { BASE_URL } from "./config.js";
         import { refreshAccessTokenIfNeeded } from "./auth.js";
+
+        function getCategoryEmoji(cat) {
+            switch (cat) {
+                case 'Plastik': return '🥤';
+                case 'Kertas': return '📄';
+                case 'Logam': return '🥫';
+                case 'Organik': return '🍌';
+                case 'Elektronik': return '🔋';
+                case 'B3': return '🧪';
+                default: return '♻️';
+            }
+        }
+
 
         const token = sessionStorage.getItem("accessToken");
         const userId = sessionStorage.getItem("userId");
@@ -93,15 +111,16 @@
                     div.innerHTML = `
                         <h3>🧾 Setor ke: ${entry.location.name}</h3>
                         <div class="history-meta">
-                            <p><strong>Tanggal:</strong> ${new Date(entry.date_collected).toLocaleDateString()}</p>
-                            <p><strong>Jenis Sampah:</strong> ${entry.waste.type}</p>
-                            <p><strong>Berat:</strong> ${entry.weight} kg</p>
-                            <p><strong>EcoPoints Diperoleh:</strong> ${entry.waste.eco_points}</p>
-                            <p><strong>Kota:</strong> ${entry.location.city}, ${entry.location.province}</p>
+                            <p><strong>📅 Tanggal:</strong> ${new Date(entry.date_collected).toLocaleDateString("id-ID")}</p>
+                            <p><strong>♻️ Jenis Sampah:</strong> ${getCategoryEmoji(entry.waste.type)} ${entry.waste.type}</p>
+                            <p><strong>⚖️ Berat:</strong> ${entry.weight} kg</p>
+                            <p><strong>🎁 EcoPoints:</strong> ${entry.waste.eco_points}</p>
+                            <p><strong>📍 Lokasi:</strong> ${entry.location.city}, ${entry.location.province}</p>
                             <img src="${entry.image_url}" alt="Foto Sampah"/>
                             <button class="delete-btn" data-id="${entry.id}">🗑 Hapus</button>
                         </div>
                     `;
+
                     container.appendChild(div);
                 });
 
@@ -121,7 +140,7 @@
                             if (!res.ok) throw new Error("Gagal menghapus data");
 
                             alert("Data berhasil dihapus.");
-                            fetchWasteHistory(); // refresh data
+                            fetchWasteHistory();
                         } catch (err) {
                             alert("Gagal menghapus: " + err.message);
                         }
