@@ -71,7 +71,7 @@
         nameEmailLoc.innerHTML = ` 
             <strong>${data.username || "Nama Tidak Tersedia"}</strong><br>
             <small>${data.email || "Email Tidak Tersedia"}</small><br>
-            <small>📍 ${data.eco_points || "Eco points Tidak Tersedia"}</small>
+            <small>${data.eco_points || "0"} Eco Points</small>
           `;
 
         const levelBadge = document.getElementById("profileLevelBadge");
