@@ -122,6 +122,7 @@
             BASE_URL
         } from "./config.js";
 
+        
 
         const userId = sessionStorage.getItem("userId");
         const token = sessionStorage.getItem("accessToken");
@@ -132,14 +133,24 @@
 
 
         // Function to get waste record ID from URL parameters
+        // function getWasteRecordId() {
+        //     const urlParams = new URLSearchParams(window.location.search);
+        //     return urlParams.get('id');
+        // }
+
+
+        // const wasteRecordId = getWasteRecordId();
+        // const isUpdateMode = !!wasteRecordId; // Check if wasteRecordId exists
+
         function getWasteRecordId() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
+            const id = urlParams.get('id');
+            console.log("Waste Record ID from URL:", id); // Tambahkan ini
+            return id;
         }
 
-
         const wasteRecordId = getWasteRecordId();
-        const isUpdateMode = !!wasteRecordId; // Check if wasteRecordId exists
+        const isUpdateMode = !!wasteRecordId;
 
 
         // Function to fetch waste types and populate the dropdown
@@ -237,11 +248,13 @@
             }
         }
 
+        
+
 
         // Function to load waste record data for update
         async function loadWasteRecordData() {
             try {
-                const res = await fetch(`${BASE_URL}/waste-record/user/${wasteRecordId}`, {
+                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
                     headers: {
                         Authorization: "Bearer " + token,
                     },
@@ -263,10 +276,20 @@
                 const result = await res.json();
                 if (result.status === "success") {
                     const wasteRecord = result.data;
+                    console.log("Waste Record Data:", wasteRecord);
                     document.getElementById("locationId").value = wasteRecord.location_id;
                     document.getElementById("wasteId").value = wasteRecord.waste_id;
                     document.getElementById("weight").value = wasteRecord.weight;
-                    document.getElementById("dateCollected").value = wasteRecord.date_collected;
+                    if (wasteRecord.date_collected) {
+                        document.getElementById("dateCollected").value = wasteRecord.date_collected.split('T')[0]; // Format date
+                    } else {
+                        // Berikan nilai default atau biarkan kosong
+                        document.getElementById("dateCollected").value = ""; // Contoh: Biarkan kosong
+                        // Atau:
+                        // document.getElementById("dateCollected").value = "1970-01-01"; // Contoh: Nilai default
+                    }
+                    // document.getElementById("dateCollected").value = wasteRecord.date_collected.split('T')[0];
+                    // document.getElementById("dateCollected").value = new Date(wasteRecord.date_collected).toDateString("id-ID");
                     if (wasteRecord.image_url) {
                         document.getElementById('imagePreview').src = wasteRecord.image_url;
                         document.getElementById('imagePreview').style.display = 'block';
