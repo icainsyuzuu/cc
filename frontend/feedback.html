@@ -1,177 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EcoWaste Manager - Feedback</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body>
-  <div id="navbar-container"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoWaste Manager - Feedback</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div id="navbar-container"></div>
 
-  <div class="screen">
-    <div class="screen-header">💬 Feedback & Support</div>
-    <div class="screen-content">
-      <form id="feedbackForm">
-        <div class="mockup-item">
-          📝 <strong>Saran dan Kesan Mata Kuliah:</strong><br />
-          <strong>Teknologi dan Pemrograman Mobile</strong>
+    <div class="screen">
+      <div class="screen-header">💬 Feedback & Support</div>
+      <div class="screen-content">
+        <form id="feedbackForm">
+          <div class="mockup-item">
+            📝 <strong>Saran dan Kesan Pengguna</strong><br />
+            <strong>Aplikasi EcoWaste</strong>
+          </div>
+
+          <div class="mockup-item">
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Berikan saran dan kesan Anda Aplikasi Eco Waste..."
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mockup-item">
+            ⭐ <strong>Rating Aplikasi:</strong><br />
+            <select id="rating" name="rating" required>
+              <option value="">Pilih rating</option>
+              <option value="1">⭐</option>
+              <option value="2">⭐⭐</option>
+              <option value="3">⭐⭐⭐</option>
+              <option value="4">⭐⭐⭐⭐</option>
+              <option value="5">⭐⭐⭐⭐⭐</option>
+            </select>
+          </div>
+
+          <div class="mockup-item">
+            <textarea
+              id="appFeedback"
+              name="appFeedback"
+              placeholder="Feedback tentang aplikasi EcoWaste Manager..."
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <button class="mockup-button" type="submit">📤 Kirim Feedback</button>
+        </form>
+
+        <div class="feedback-list" id="feedbackList">
+          <!-- List feedback akan muncul di sini -->
         </div>
-
-        <div class="mockup-item">
-          <textarea
-            id="message"
-            name="message"
-            placeholder="Berikan saran dan kesan Anda tentang mata kuliah Teknologi dan Pemrograman Mobile..."
-            rows="4"
-            required
-          ></textarea>
-        </div>
-
-        <div class="mockup-item">
-          ⭐ <strong>Rating Aplikasi:</strong><br />
-          <select id="rating" name="rating" required>
-            <option value="">Pilih rating</option>
-            <option value="1">⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-          </select>
-        </div>
-
-        <div class="mockup-item">
-          <textarea
-            id="appFeedback"
-            name="appFeedback"
-            placeholder="Feedback tentang aplikasi EcoWaste Manager..."
-            rows="3"
-            required
-          ></textarea>
-        </div>
-
-        <button class="mockup-button" type="submit">📤 Kirim Feedback</button>
-        <button
-          class="mockup-button secondary"
-          type="button"
-          id="reportBugBtn"
-        >
-          🐛 Laporkan Bug
-        </button>
-      </form>
-
-      
-
-      <div class="feedback-list" id="feedbackList">
-        <!-- List feedback akan muncul di sini -->
       </div>
     </div>
-  </div>
 
-  <script src="assets/loadNavbar.js"></script>
+    <script src="assets/loadNavbar.js"></script>
 
-  <script>
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Silakan login terlebih dahulu!");
-      window.location.href = "index.html";
-    }
-
-
-    // Kirim feedback
-    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const message = document.getElementById("message").value.trim();
-      const rating = document.getElementById("rating").value;
-      const appFeedback = document.getElementById("appFeedback").value.trim();
-
-      if (!message || !rating || !appFeedback) {
-        alert("Semua kolom harus diisi.");
-        return;
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Silakan login terlebih dahulu!");
+        window.location.href = "index.html";
       }
 
-      try {
-        const res = await fetch("http://localhost:3000/api/feedback", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-          body: JSON.stringify({
-            message,
-            rating: parseInt(rating),
-            type: "general",
-            appFeedback,
-          }),
-        });
+      // Kirim feedback
+      document
+        .getElementById("feedbackForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        const data = await res.json();
+          const message = document.getElementById("message").value.trim();
+          const rating = document.getElementById("rating").value;
+          const appFeedback = document
+            .getElementById("appFeedback")
+            .value.trim();
 
-        if (res.ok && data.success) {
-          alert("Feedback berhasil dikirim.");
-          e.target.reset();
-          loadFeedbackList();
-        } else {
-          alert("Gagal mengirim feedback: " + (data.message || "Coba lagi"));
-        }
-      } catch (error) {
-        alert("Terjadi kesalahan: " + error.message);
-      }
-    });
+          if (!message || !rating || !appFeedback) {
+            alert("Semua kolom harus diisi.");
+            return;
+          }
 
-    // Fungsi untuk load feedback list dari API
-    async function loadFeedbackList() {
-      try {
-        const res = await fetch("http://localhost:3000/api/feedback", {
-          headers: { Authorization: "Bearer " + token },
-        });
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          const listContainer = document.getElementById("feedbackList");
-          listContainer.innerHTML = "";
-
-          data.data.forEach((fb) => {
-            const item = document.createElement("div");
-            item.className = "feedback-item";
-
-            // Format tanggal
-            const createdAt = new Date(fb.created_at);
-            const formattedDate = createdAt.toLocaleDateString("id-ID", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
+          try {
+            const res = await fetch("http://localhost:3000/api/feedback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+              body: JSON.stringify({
+                message,
+                rating: parseInt(rating),
+                type: "general",
+                appFeedback,
+              }),
             });
 
-            item.innerHTML = `
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              alert("Feedback berhasil dikirim.");
+              e.target.reset();
+              loadFeedbackList();
+            } else {
+              alert(
+                "Gagal mengirim feedback: " + (data.message || "Coba lagi")
+              );
+            }
+          } catch (error) {
+            alert("Terjadi kesalahan: " + error.message);
+          }
+        });
+
+      // Fungsi untuk load feedback list dari API
+      async function loadFeedbackList() {
+        try {
+          const res = await fetch("http://localhost:3000/api/feedback", {
+            headers: { Authorization: "Bearer " + token },
+          });
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            const listContainer = document.getElementById("feedbackList");
+            listContainer.innerHTML = "";
+
+            data.data.forEach((fb) => {
+              const item = document.createElement("div");
+              item.className = "feedback-item";
+
+              // Format tanggal
+              const createdAt = new Date(fb.created_at);
+              const formattedDate = createdAt.toLocaleDateString("id-ID", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+
+              item.innerHTML = `
               <div class="user">${fb.user_name || "Anonymous"}</div>
               <div class="meta">
-                ${formattedDate} | <span class="rating-stars">${"⭐".repeat(fb.rating)}</span>
+                ${formattedDate} | <span class="rating-stars">${"⭐".repeat(
+                fb.rating
+              )}</span>
               </div>
               <div class="message">${fb.message}</div>
             `;
 
-            listContainer.appendChild(item);
-          });
-        } else {
-          console.error("Gagal memuat feedback:", data.message);
+              listContainer.appendChild(item);
+            });
+          } else {
+            console.error("Gagal memuat feedback:", data.message);
+          }
+        } catch (error) {
+          console.error("Error fetch feedback:", error);
         }
-      } catch (error) {
-        console.error("Error fetch feedback:", error);
       }
-    }
 
-    // Load feedback saat halaman dimuat
-    document.addEventListener("DOMContentLoaded", loadFeedbackList);
+      // Load feedback saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", loadFeedbackList);
+    </script>
 
-    // Tombol laporkan bug (contoh alert)
-    document.getElementById("reportBugBtn").addEventListener("click", () => {
-      alert("Fitur laporkan bug segera hadir!");
-    });
-  </script>
-
-   <!-- Load loadNavbar.js untuk muat navbar -->
+    <!-- Load loadNavbar.js untuk muat navbar -->
     <script src="assets/js/loadNavbar.js"></script>
-</body>
+  </body>
 </html>
