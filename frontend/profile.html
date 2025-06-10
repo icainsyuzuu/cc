@@ -31,6 +31,7 @@
         📸 Ganti Foto Profil
       </button>
       <button class="mockup-button" id="btnSettings">⚙️ Pengaturan</button>
+      <button class="mockup-button" id="btnHistory">Riwayat Penyetoran</button>
 
 
       <!-- Tombol Logout -->
@@ -104,6 +105,10 @@
 
     document.getElementById("btnSettings").addEventListener("click", () => {
       alert("Fitur pengaturan belum tersedia");
+    });
+
+    document.getElementById("btnHistory").addEventListener("click", () => {
+      window.location.href = 'waste_history.html';
     });
 
     // Fungsi Logout
