@@ -1,170 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>EcoWaste Manager - Feedback</title>
-    <link rel="stylesheet" href="assets/css/style.css" />
-  </head>
-  <body>
-    <div id="navbar-container"></div>
 
-    <div class="screen">
-      <div class="screen-header">💬 Feedback & Support</div>
-      <div class="screen-content">
-        <form id="feedbackForm">
-          <div class="mockup-item">
-            📝 <strong>Saran dan Kesan Pengguna</strong><br />
-            <strong>Aplikasi EcoWaste</strong>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EcoWaste Manager - Feedback</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
 
-          <div class="mockup-item">
-            <textarea
-              id="message"
-              name="message"
-              placeholder="Berikan saran dan kesan Anda Aplikasi Eco Waste..."
-              rows="4"
-              required
-            ></textarea>
-          </div>
+<body>
+  <div id="navbar-container"></div>
 
-          <div class="mockup-item">
-            ⭐ <strong>Rating Aplikasi:</strong><br />
-            <select id="rating" name="rating" required>
-              <option value="">Pilih rating</option>
-              <option value="1">⭐</option>
-              <option value="2">⭐⭐</option>
-              <option value="3">⭐⭐⭐</option>
-              <option value="4">⭐⭐⭐⭐</option>
-              <option value="5">⭐⭐⭐⭐⭐</option>
-            </select>
-          </div>
-
-          <div class="mockup-item">
-            <textarea
-              id="appFeedback"
-              name="appFeedback"
-              placeholder="Feedback tentang aplikasi EcoWaste Manager..."
-              rows="3"
-              required
-            ></textarea>
-          </div>
-
-          <button class="mockup-button" type="submit">📤 Kirim Feedback</button>
-        </form>
-
-        <div class="feedback-list" id="feedbackList">
-          <!-- List feedback akan muncul di sini -->
+  <div class="screen">
+    <div class="screen-header">💬 Feedback & Support</div>
+    <div class="screen-content">
+      <form id="feedbackForm">
+        <div class="mockup-item">
+          ⭐ <strong>Rating Aplikasi:</strong><br />
+          <select id="rating" name="rating" required>
+            <option value="">Pilih rating</option>
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+          </select>
         </div>
+
+        <div class="mockup-item">
+          <textarea id="message" name="message" placeholder="Feedback tentang aplikasi EcoWaste Manager..." rows="3"
+            required></textarea>
+        </div>
+
+        <button class="mockup-button" type="submit">📤 Kirim Feedback</button>
+        <button class="mockup-button secondary" type="button" id="reportBugBtn">
+          🐛 Laporkan Bug
+        </button>
+      </form>
+
+      <div class="feedback-list" id="feedbackList">
+        <!-- List feedback akan muncul di sini -->
       </div>
     </div>
+  </div>
 
-    <script src="assets/loadNavbar.js"></script>
+  <script type="module" src="config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { BASE_URL } from "./config.js";
+    import { refreshAccessTokenIfNeeded } from "./auth.js";
 
-    <script>
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Silakan login terlebih dahulu!");
-        window.location.href = "index.html";
-      }
+    const token = sessionStorage.getItem("accessToken");
+    const userId = sessionStorage.getItem("userId");
+    if (!token) {
+      alert("Silakan login terlebih dahulu!");
+      window.location.href = "index.html";
+    }
 
-      // Kirim feedback
-      document
-        .getElementById("feedbackForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+    // Load Feedback List dari API - FIXED: Using GET method
+    async function loadFeedbackList() {
+      try {
+        console.log('BASE_URL:', BASE_URL);
+        console.log('userId:', userId);
+        console.log('Full URL:', `${BASE_URL}/feedback/user/${userId}`);
 
-          const message = document.getElementById("message").value.trim();
-          const rating = document.getElementById("rating").value;
-          const appFeedback = document
-            .getElementById("appFeedback")
-            .value.trim();
-
-          if (!message || !rating || !appFeedback) {
-            alert("Semua kolom harus diisi.");
-            return;
-          }
-
-          try {
-            const res = await fetch("http://localhost:3000/api/feedback", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token,
-              },
-              body: JSON.stringify({
-                message,
-                rating: parseInt(rating),
-                type: "general",
-                appFeedback,
-              }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-              alert("Feedback berhasil dikirim.");
-              e.target.reset();
-              loadFeedbackList();
-            } else {
-              alert(
-                "Gagal mengirim feedback: " + (data.message || "Coba lagi")
-              );
-            }
-          } catch (error) {
-            alert("Terjadi kesalahan: " + error.message);
-          }
+        const res = await fetch(`${BASE_URL}/feedback/user/${userId}`, {
+          method: "GET", // Changed from POST to GET
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          // Removed body since GET requests don't have body
         });
 
-      // Fungsi untuk load feedback list dari API
-      async function loadFeedbackList() {
-        try {
-          const res = await fetch("http://localhost:3000/api/feedback", {
-            headers: { Authorization: "Bearer " + token },
-          });
-          const data = await res.json();
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
 
-          if (res.ok && data.success) {
-            const listContainer = document.getElementById("feedbackList");
-            listContainer.innerHTML = "";
+        if (!res.ok) {
+          // Try to get error message from response
+          let errorMessage = `HTTP error! status: ${res.status}`;
+          try {
+            const errorData = await res.json();
+            errorMessage += ` - ${errorData.message || 'Unknown error'}`;
+          } catch (e) {
+            // If can't parse as JSON, try as text
+            try {
+              const errorText = await res.text();
+              console.log('Error response text:', errorText);
+            } catch (e2) {
+              console.log('Cannot read error response');
+            }
+          }
+          throw new Error(errorMessage);
+        }
 
-            data.data.forEach((fb) => {
-              const item = document.createElement("div");
-              item.className = "feedback-item";
+        const data = await res.json();
+        const listContainer = document.getElementById("feedbackList");
+        listContainer.innerHTML = "";
 
-              // Format tanggal
-              const createdAt = new Date(fb.created_at);
-              const formattedDate = createdAt.toLocaleDateString("id-ID", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
+        if (data.status === "success" && data.data && data.data.length > 0) {
+          data.data.forEach((fb) => {
+            const item = document.createElement("div");
+            item.className = "feedback-item";
+            item.setAttribute("data-id", fb.id);
 
-              item.innerHTML = `
-              <div class="user">${fb.user_name || "Anonymous"}</div>
+            // Format tanggal
+            const createdAt = new Date(fb.createdAt);
+            const formattedDate = createdAt.toLocaleDateString("id-ID", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            // Fixed template literal syntax
+            item.innerHTML = `
+              <div class="user">${fb.user?.username || fb.User?.username || "User " + fb.user_id}</div>
               <div class="meta">
-                ${formattedDate} | <span class="rating-stars">${"⭐".repeat(
-                fb.rating
-              )}</span>
+                ${formattedDate} | <span class="rating-stars">${"⭐".repeat(fb.rating)}</span>
               </div>
               <div class="message">${fb.message}</div>
+              <button class="mockup-button edit-btn">✏️ Edit</button>
+              <button class="mockup-button delete-btn">🗑️ Delete</button>
             `;
+            listContainer.appendChild(item);
 
-              listContainer.appendChild(item);
+            // Edit button event
+            item.querySelector(".edit-btn").addEventListener("click", () => {
+              document.getElementById("rating").value = fb.rating;
+              document.getElementById("message").value = fb.message;
+              document.getElementById("feedbackForm").setAttribute("data-editing-id", fb.id);
+              document.querySelector("button[type=submit]").textContent = "📤 Simpan Perubahan";
             });
-          } else {
-            console.error("Gagal memuat feedback:", data.message);
-          }
-        } catch (error) {
-          console.error("Error fetch feedback:", error);
+
+            // Delete button event
+            item.querySelector(".delete-btn").addEventListener("click", async () => {
+              const confirmed = confirm("Apakah Anda yakin ingin menghapus feedback ini?");
+              if (!confirmed) return;
+              try {
+                const delRes = await fetch(`${BASE_URL}/feedback/${fb.id}`, {
+                  method: "DELETE",
+                  headers: {
+                    Authorization: "Bearer " + token,
+                  },
+                });
+
+                if (!delRes.ok) {
+                  throw new Error(`HTTP error! status: ${delRes.status}`);
+                }
+
+                const delData = await delRes.json();
+                if (delData.status === "success") {
+                  alert("Feedback berhasil dihapus.");
+                  loadFeedbackList();
+                } else {
+                  alert("Gagal menghapus feedback: " + (delData.message || "Coba lagi"));
+                }
+              } catch (error) {
+                console.error("Delete error:", error);
+                alert("Terjadi kesalahan: " + error.message);
+              }
+            });
+          });
+        } else {
+          listContainer.innerHTML = "<div style='color:gray'>Belum ada feedback.</div>";
         }
+      } catch (error) {
+        console.error("Error fetch feedback:", error);
+        alert("Gagal memuat feedback: " + error.message);
+      }
+    }
+    loadFeedbackList();
+
+    // Kirim / Edit feedback (1 event listener saja)
+    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const rating = document.getElementById("rating").value;
+      const message = document.getElementById("message").value.trim();
+      const editingId = e.target.getAttribute("data-editing-id");
+
+      if (!message || !rating) {
+        alert("Semua kolom harus diisi.");
+        return;
       }
 
-      // Load feedback saat halaman dimuat
-      document.addEventListener("DOMContentLoaded", loadFeedbackList);
-    </script>
+      // Jika sedang edit
+      if (editingId) {
+        try {
+          const res = await fetch(`${BASE_URL}/feedback/${editingId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+              message,
+              rating: parseInt(rating),
+            }),
+          });
 
-    <!-- Load loadNavbar.js untuk muat navbar -->
-    <script src="assets/js/loadNavbar.js"></script>
-  </body>
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+
+          const data = await res.json();
+          if (data.status === "success") {
+            alert("Perubahan feedback berhasil disimpan.");
+            e.target.reset();
+            e.target.removeAttribute("data-editing-id");
+            document.querySelector("button[type=submit]").textContent = "📤 Kirim Feedback";
+            loadFeedbackList();
+          } else {
+            alert("Gagal menyimpan perubahan: " + (data.message || "Coba lagi"));
+          }
+        } catch (error) {
+          console.error("Update error:", error);
+          alert("Terjadi kesalahan: " + error.message);
+        }
+        return;
+      }
+
+      // Jika tambah feedback baru
+      try {
+        const res = await fetch(`${BASE_URL}/feedback/user/${userId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({
+            message,
+            rating: parseInt(rating),
+            // Removed type field since it's not in your model
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (data.status === "success") {
+          alert("Feedback berhasil dikirim.");
+          e.target.reset();
+          loadFeedbackList();
+        } else {
+          alert("Gagal mengirim feedback: " + (data.message || "Coba lagi"));
+        }
+      } catch (error) {
+        console.error("Create error:", error);
+        alert("Terjadi kesalahan: " + error.message);
+      }
+    });
+
+    // Tombol laporkan bug
+    document.getElementById("reportBugBtn").addEventListener("click", () => {
+      alert("Fitur laporkan bug segera hadir!");
+    });
+  </script>
+
+  <!-- Load loadNavbar.js untuk muat navbar -->
+  <script src="assets/js/loadNavbar.js"></script>
+</body>
+
 </html>
