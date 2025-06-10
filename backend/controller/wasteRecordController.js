@@ -37,31 +37,29 @@ const getWasteRecordsByUserId = async (req, res) => {
 };
 
 const getWasteRecordsById = async (req, res) => {
-  const { user_id, waste_id } = req.params;
+  const { id } = req.params;
 
   try {
-    const records = await WasteRecord.findAll({
-      where: { user_id: user_id, waste_id: waste_id},
-      include: [
-        {
-          model: User,
-          as: "user", // sesuai alias
-          attributes: ["username", "email", "eco_points"],
-        },
-        {
-          model: Waste,
-          as: "waste", // sesuai alias
-          attributes: ["type", "price", "eco_points"],
-        },
-        {
-          model: Location,
-          as: "location", // sesuai alias
-          attributes: ["name", "city", "province"],
-        },
+    const record = await WasteRecord.findByPk(id, { // Find by primary key (id)
+      include: [{
+        model: User,
+        as: "user", // sesuai alias
+        attributes: ["username", "email", "eco_points"],
+      },
+      {
+        model: Waste,
+        as: "waste", // sesuai alias
+        attributes: ["type", "price", "eco_points"],
+      },
+      {
+        model: Location,
+        as: "location", // sesuai alias
+        attributes: ["name", "city", "province"],
+      },
       ],
     });
 
-    res.json({ status: "success", data: records });
+    res.json({ status: "success", data: record });
   } catch (error) {
     console.error("Get waste records error:", error);
     res.status(500).json({ status: "failed", message: "Server error" });

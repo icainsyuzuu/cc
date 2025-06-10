@@ -240,8 +240,9 @@
 
         // Function to load waste record data for update
         async function loadWasteRecordData() {
+            const userId = sessionStorage.getItem('userId');
             try {
-                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
+                const res = await fetch(`${BASE_URL}/waste-record/${userId}/${wasteRecordId}`, {
                     headers: {
                         Authorization: "Bearer " + token,
                     },
