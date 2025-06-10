@@ -1,15 +1,23 @@
 import express from 'express';
 import { authMiddleware } from '../middleware/authMiddleware.js';
-import { createFeedback, deleteFeedbackById, getFeedbackByUserId, getFeedbacksById, updateFeedbackById } from '../controller/feedbackController.js';
+import { 
+    createFeedback, 
+    deleteFeedbackById, 
+    getFeedbackByUserId, 
+    getFeedbacksById, 
+    updateFeedbackById 
+} from '../controller/feedbackController.js';
+
 const feedbackRouter = express.Router();
 
-// Semua routes memerlukan autentikasi\\
+// Apply auth middleware to all routes
 feedbackRouter.use(authMiddleware);
-feedbackRouter.get('/feedback/user/:user_id', getFeedbackByUserId);  // Untuk mendapatkan feedback berdasarkan user_id
-feedbackRouter.post('/feedback/user/:user_id', createFeedback); // Untuk menambah feedback berdasarkan user_id
-feedbackRouter.put('/feedback/:id', updateFeedbackById); // Untuk update feedback berdasarkan id
-feedbackRouter.delete('/feedback/:id', deleteFeedbackById); // Untuk menghapus feedback berdasarkan id
 
-
+// Routes for feedback operations
+feedbackRouter.get('/user/:user_id', getFeedbackByUserId);  // GET /api/feedback/user/:user_id
+feedbackRouter.post('/user/:user_id', createFeedback);      // POST /api/feedback/user/:user_id
+feedbackRouter.get('/:id', getFeedbacksById);              // GET /api/feedback/:id
+feedbackRouter.put('/:id', updateFeedbackById);            // PUT /api/feedback/:id
+feedbackRouter.delete('/:id', deleteFeedbackById);         // DELETE /api/feedback/:id
 
 export { feedbackRouter };
