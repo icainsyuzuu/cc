@@ -7,12 +7,12 @@ const getFeedbackByUserId = async (req, res) => {
 
     try {
         console.log('Getting feedback for user_id:', user_id);
-        
+
         // Validate user_id
         if (!user_id) {
-            return res.status(400).json({ 
-                status: "failed", 
-                message: "User ID diperlukan" 
+            return res.status(400).json({
+                status: "failed",
+                message: "User ID diperlukan"
             });
         }
 
@@ -29,30 +29,30 @@ const getFeedbackByUserId = async (req, res) => {
                         required: false // LEFT JOIN
                     },
                 ],
-                order: [['created_at', 'DESC']],
+                order: [['createdAt', 'DESC']],
             });
         } catch (includeError) {
             console.error("Error with include, trying without:", includeError);
             // If association fails, get feedbacks without user data
             feedbacks = await Feedback.findAll({
                 where: { user_id },
-                order: [['created_at', 'DESC']],
+                order: [['createdAt', 'DESC']],
             });
         }
 
         console.log('Found feedbacks:', feedbacks.length);
-        
-        res.json({ 
-            status: "success", 
-            data: feedbacks 
+
+        res.json({
+            status: "success",
+            data: feedbacks
         });
     } catch (error) {
         console.error("Get feedback error:", error);
         console.error("Error details:", error.message);
         console.error("Stack trace:", error.stack);
-        res.status(500).json({ 
-            status: "failed", 
-            message: "Server error: " + error.message 
+        res.status(500).json({
+            status: "failed",
+            message: "Server error: " + error.message
         });
     }
 };
@@ -114,18 +114,18 @@ const createFeedback = async (req, res) => {
 
     // Validasi input
     if (!message || !rating || !user_id) {
-        return res.status(400).json({ 
-            status: "failed", 
-            message: "Semua kolom harus diisi" 
+        return res.status(400).json({
+            status: "failed",
+            message: "Semua kolom harus diisi"
         });
     }
 
     // Validasi rating range
     const ratingNum = parseInt(rating);
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-        return res.status(400).json({ 
-            status: "failed", 
-            message: "Rating harus antara 1-5" 
+        return res.status(400).json({
+            status: "failed",
+            message: "Rating harus antara 1-5"
         });
     }
 
@@ -157,9 +157,9 @@ const createFeedback = async (req, res) => {
     } catch (error) {
         console.error("Create feedback error:", error);
         console.error("Error details:", error.message);
-        res.status(500).json({ 
-            status: "failed", 
-            message: "Server error: " + error.message 
+        res.status(500).json({
+            status: "failed",
+            message: "Server error: " + error.message
         });
     }
 };
@@ -196,9 +196,9 @@ const updateFeedbackById = async (req, res) => {
 
         const feedback = await Feedback.findByPk(id);
         if (!feedback) {
-            return res.status(404).json({ 
-                status: "failed", 
-                message: "Feedback tidak ditemukan" 
+            return res.status(404).json({
+                status: "failed",
+                message: "Feedback tidak ditemukan"
             });
         }
 
@@ -207,16 +207,16 @@ const updateFeedbackById = async (req, res) => {
             rating: ratingNum,
         });
 
-        res.json({ 
-            status: "success", 
-            message: "Feedback berhasil diperbarui", 
-            data: feedback 
+        res.json({
+            status: "success",
+            message: "Feedback berhasil diperbarui",
+            data: feedback
         });
     } catch (error) {
         console.error("Update feedback error:", error);
-        res.status(500).json({ 
-            status: "failed", 
-            message: "Server error: " + error.message 
+        res.status(500).json({
+            status: "failed",
+            message: "Server error: " + error.message
         });
     }
 };
@@ -236,23 +236,23 @@ const deleteFeedbackById = async (req, res) => {
 
         const feedback = await Feedback.findByPk(id);
         if (!feedback) {
-            return res.status(404).json({ 
-                status: "failed", 
-                message: "Feedback tidak ditemukan" 
+            return res.status(404).json({
+                status: "failed",
+                message: "Feedback tidak ditemukan"
             });
         }
 
         await feedback.destroy();
 
-        res.json({ 
-            status: "success", 
-            message: "Feedback berhasil dihapus" 
+        res.json({
+            status: "success",
+            message: "Feedback berhasil dihapus"
         });
     } catch (error) {
         console.error("Delete feedback error:", error);
-        res.status(500).json({ 
-            status: "failed", 
-            message: "Server error: " + error.message 
+        res.status(500).json({
+            status: "failed",
+            message: "Server error: " + error.message
         });
     }
 };
