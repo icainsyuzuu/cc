@@ -7,9 +7,9 @@ import {
     getProfile,
     updateProfile,
     deleteProfile,
-    uploadPhotoProfile
+    // uploadPhotoProfile
 } from '../controller/userController.js';
-import { uploadImage } from '../middleware/uploadImage.js';
+// import { uploadImage } from '../middleware/uploadImage.js';
 
 const userRouter = express.Router();
 userRouter.get('/dashboard', authMiddleware, getDashboard);
