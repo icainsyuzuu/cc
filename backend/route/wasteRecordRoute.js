@@ -15,7 +15,7 @@ WasteRecordRouter.use(authMiddleware);
 // GET /api/waste/user/:user_id - Ambil semua waste record milik user
 WasteRecordRouter.get('/user/:user_id', getWasteRecordsByUserId);
 // GET /api/waste/user/:user_id - Ambil semua waste record milik user
-WasteRecordRouter.get('/:waste_id', getWasteRecordsById);
+WasteRecordRouter.get('/:id', getWasteRecordsById);
 // POST /api/waste/user/:user_id - Buat waste record baru untuk user
 WasteRecordRouter.post('/user/:user_id', uploadImage, createWasteRecordByUserId);
 

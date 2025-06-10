@@ -37,7 +37,9 @@ const getWasteRecordsByUserId = async (req, res) => {
 };
 
 const getWasteRecordsById = async (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
 
   try {
     const record = await WasteRecord.findByPk(id, { // Find by primary key (id)
@@ -50,8 +52,7 @@ const getWasteRecordsById = async (req, res) => {
         model: Waste,
         as: "waste", // sesuai alias
         attributes: ["type", "price", "eco_points"],
-      },
-      {
+      }, {
         model: Location,
         as: "location", // sesuai alias
         attributes: ["name", "city", "province"],
@@ -59,10 +60,23 @@ const getWasteRecordsById = async (req, res) => {
       ],
     });
 
-    res.json({ status: "success", data: record });
+    if (!record) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Data tidak ditemukan"
+      }); // Handle not found
+    }
+
+    res.json({
+      status: "success",
+      data: record
+    });
   } catch (error) {
     console.error("Get waste records error:", error);
-    res.status(500).json({ status: "failed", message: "Server error" });
+    res.status(500).json({
+      status: "failed",
+      message: "Server error"
+    });
   }
 };
 
