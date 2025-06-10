@@ -122,6 +122,7 @@
             BASE_URL
         } from "./config.js";
 
+
         const userId = sessionStorage.getItem("userId");
         const token = sessionStorage.getItem("accessToken");
         if (!token) {
@@ -240,24 +241,33 @@
         // Function to load waste record data for update
         async function loadWasteRecordData() {
             try {
-                const res = await fetch(`${BASE_URL}/waste-record/${userId}`, {
+                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
                     headers: {
                         Authorization: "Bearer " + token,
                     },
                 });
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        alert("Data penyetoran dengan ID tersebut tidak ditemukan.");
+                        window.location.href = "waste_history.html"; // Redirect to history page
+                        return;
+                    } else if (res.status === 401) {
+                        alert("Otorisasi gagal. Silakan login kembali.");
+                        window.location.href = "index.html"; // Redirect to login
+                        return;
+                    } else {
+                        throw new Error(`Gagal mengambil data: ${res.status} ${res.statusText}`);
+                    }
+                }
+
+
                 const result = await res.json();
-
-
-                if (res.ok && result.status === "success") {
+                if (result.status === "success") {
                     const wasteRecord = result.data;
-                    // document.getElementById("userId").value = wasteRecord.user_id;
                     document.getElementById("locationId").value = wasteRecord.location_id;
                     document.getElementById("wasteId").value = wasteRecord.waste_id;
                     document.getElementById("weight").value = wasteRecord.weight;
                     document.getElementById("dateCollected").value = wasteRecord.date_collected;
-
-
-                    // Display image if available
                     if (wasteRecord.image_url) {
                         document.getElementById('imagePreview').src = wasteRecord.image_url;
                         document.getElementById('imagePreview').style.display = 'block';
@@ -280,7 +290,6 @@
             }
 
 
-            // const userId = document.getElementById("userId").value;
             const locationId = document.getElementById("locationId").value;
             const wasteId = document.getElementById("wasteId").value;
             const weight = document.getElementById("weight").value;
@@ -299,13 +308,11 @@
                 }
 
 
-                // Determine the method and endpoint based on the mode
                 const method = isUpdateMode ? "PUT" : "POST";
                 const endpoint = isUpdateMode ? `${BASE_URL}/waste-record/${wasteRecordId}` :
                     `${BASE_URL}/waste-record/user/${userId}`;
 
 
-                // Create or update waste record
                 const res = await fetch(endpoint, {
                     method: method,
                     headers: {
@@ -318,7 +325,7 @@
                 const result = await res.json();
                 if (!res.ok) throw new Error(result.message || "Failed to create/update waste record");
                 alert("Waste record berhasil " + (isUpdateMode ? "diperbarui" : "dibuat"));
-                window.location.href = "waste_history.html"; // Redirect to home or waste record list
+                window.location.href = "waste_history.html";
             } catch (err) {
                 alert("Error: " + err.message);
             }
