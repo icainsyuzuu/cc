@@ -29,6 +29,21 @@
             font-size: 0.9em;
             color: #555;
         }
+
+        .delete-btn {
+            margin-top: 12px;
+            padding: 8px 12px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 
@@ -78,22 +93,45 @@
                     div.innerHTML = `
                         <h3>🧾 Setor ke: ${entry.location.name}</h3>
                         <div class="history-meta">
-                        <p><strong>Tanggal:</strong> ${new Date(entry.date_collected).toLocaleDateString()}</p>
-                        <p><strong>Jenis Sampah:</strong> ${entry.waste.type}</p>
-                        <p><strong>Berat:</strong> ${entry.weight} kg</p>
-                        <p><strong>EcoPoints Diperoleh:</strong> ${entry.waste.eco_points}</p>
-                        <p><strong>Kota:</strong> ${entry.location.city}, ${entry.location.province}</p>
-                        <img src="${entry.image_url}" alt="Foto Sampah"/>
+                            <p><strong>Tanggal:</strong> ${new Date(entry.date_collected).toLocaleDateString()}</p>
+                            <p><strong>Jenis Sampah:</strong> ${entry.waste.type}</p>
+                            <p><strong>Berat:</strong> ${entry.weight} kg</p>
+                            <p><strong>EcoPoints Diperoleh:</strong> ${entry.waste.eco_points}</p>
+                            <p><strong>Kota:</strong> ${entry.location.city}, ${entry.location.province}</p>
+                            <img src="${entry.image_url}" alt="Foto Sampah"/>
+                            <button class="delete-btn" data-id="${entry.id}">🗑 Hapus</button>
                         </div>
                     `;
                     container.appendChild(div);
                 });
-            } catch (error) {
-                document.getElementById("wasteHistoryContainer").innerHTML =
-                    `<p>${error.message}</p>`;
+
+                // Pasang event listener di sini SETELAH elemen ditambahkan ke DOM
+                document.querySelectorAll(".delete-btn").forEach((btn) => {
+                    btn.addEventListener("click", async (e) => {
+                        const id = e.target.getAttribute("data-id");
+                        const confirmed = confirm("Apakah Anda yakin ingin menghapus penyetoran ini?");
+                        if (!confirmed) return;
+
+                        try {
+                            const res = await fetch(`${BASE_URL}/waste-record/${id}`, {
+                                method: "DELETE",
+                                headers: { Authorization: "Bearer " + token }
+                            });
+
+                            if (!res.ok) throw new Error("Gagal menghapus data");
+
+                            alert("Data berhasil dihapus.");
+                            fetchWasteHistory(); // refresh data
+                        } catch (err) {
+                            alert("Gagal menghapus: " + err.message);
+                        }
+                    });
+                });
+
+            } catch {
+                alert('no data fetch');
             }
         }
-
         fetchWasteHistory();
     </script>
 
