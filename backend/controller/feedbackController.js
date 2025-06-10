@@ -1,5 +1,5 @@
 import { Feedback } from "../model/feedback.js";
-import { User } from "../model/user.js"; // Import model User jika dibutuhkan
+import { User } from "../model/user.js";
 
 // Fungsi untuk mendapatkan feedback berdasarkan user_id
 const getFeedbackByUserId = async (req, res) => {
@@ -24,34 +24,77 @@ const getFeedbackByUserId = async (req, res) => {
     }
 };
 
-// Fungsi untuk membuat feedback baru
-const createFeedback = async (req, res) => {
-    const { message, rating, user_id } = req.body;
+const getFeedbacksById = async (req, res) => {
+    const {
+        id
+    } = req.params;
 
     try {
-        // Validasi input
-        if (!message || !rating || !user_id) {
-            return res.status(400).json({ status: "failed", message: "Semua kolom harus diisi" });
+        const feedbacks = await Feedback.findByPk(id, {
+            include: [{
+                model: User,
+                as: "user", // sesuai alias
+                attributes: ["username", "email"],
+            },
+            ],
+        });
+
+        if (!record) {
+            return res.status(404).json({
+                status: "failed",
+                message: "Data tidak ditemukan"
+            });
         }
 
+        res.json({
+            status: "success",
+            data: record
+        });
+    } catch (error) {
+        console.error("Get Feedback error:", error);
+        res.status(500).json({
+            status: "failed",
+            message: "Server error"
+        });
+    }
+};
+
+// Fungsi untuk membuat feedback baru
+const createFeedback = async (req, res) => {
+    const { user_id } = req.params;  // user_id didapat dari parameter URL
+    const { message, rating } = req.body;  // id dihapus, karena auto-increment
+
+    // Validasi input
+    if (!message || !rating || !user_id) {
+        return res.status(400).json({ status: "failed", message: "Semua kolom harus diisi" });
+    }
+
+    try {
+        // Cek jika user ada di database
         const user = await User.findByPk(user_id);
         if (!user) {
             return res.status(404).json({ status: "failed", message: "User tidak ditemukan" });
         }
 
-
+        // Simpan feedback ke dalam database tanpa gambar
         const newFeedback = await Feedback.create({
-            user_id,
+            user_id,  // Menggunakan user_id yang diterima
             message,
             rating,
         });
 
-        res.status(201).json({ status: "success", message: "Feedback berhasil dikirim", data: newFeedback });
+        res.status(201).json({
+            status: "success",
+            message: "Feedback berhasil dikirim",
+            data: newFeedback,
+        });
     } catch (error) {
         console.error("Create feedback error:", error);
         res.status(500).json({ status: "failed", message: "Server error" });
     }
 };
+
+
 
 // Fungsi untuk memperbarui feedback berdasarkan ID
 const updateFeedbackById = async (req, res) => {
@@ -97,6 +140,7 @@ const deleteFeedbackById = async (req, res) => {
 
 export {
     getFeedbackByUserId,
+    getFeedbacksById,
     createFeedback,
     updateFeedbackById,
     deleteFeedbackById,
