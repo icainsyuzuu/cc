@@ -21,8 +21,8 @@ const Feedback = db.define("feedbacks", {
     },
 }, {
     timestamps: true, // This will add createdAt and updatedAt
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 });
 
 export { Feedback };
