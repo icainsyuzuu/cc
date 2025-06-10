@@ -5,15 +5,11 @@ const feedbackRouter = express.Router();
 
 // Semua routes memerlukan autentikasi\\
 feedbackRouter.use(authMiddleware);
-// GET /api/feed/user/:user_id - Ambil semua feedback record milik user
-feedbackRouter.get('/feedback/user/:user_id', getFeedbackByUserId);
-feedbackRouter.get('/feedback/user/:id', getFeedbacksById);
-// POST /api/feedback/user/:user_id - Buat feedback record baru untuk user
-feedbackRouter.post('/feedback/user/:user_id', createFeedback);
-// PUT /api/feedback/:id - Update feedback record berdasarkan ID
-feedbackRouter.put('feedback/:id', updateFeedbackById);
-// DELETE /api/feedback/:id - Hapus feedback record berdasarkan ID
-feedbackRouter.delete('/feedback/:id', deleteFeedbackById);
+feedbackRouter.get('/feedback/user/:user_id', getFeedbackByUserId);  // Untuk mendapatkan feedback berdasarkan user_id
+feedbackRouter.post('/feedback/user/:user_id', createFeedback); // Untuk menambah feedback berdasarkan user_id
+feedbackRouter.put('/feedback/:id', updateFeedbackById); // Untuk update feedback berdasarkan id
+feedbackRouter.delete('/feedback/:id', deleteFeedbackById); // Untuk menghapus feedback berdasarkan id
+
+
 
 export { feedbackRouter };
-
