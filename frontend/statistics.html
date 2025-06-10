@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <script src="assets/loadNavbar.js"></script>
+    <script src="assets/js/loadNavbar.js"></script>
 
     <script>
       // Dummy data untuk sampah bulanan
@@ -101,56 +101,56 @@
       • Water Saved: 125 liter
     `;
 
-      // Fungsi fetch konversi mata uang dari API BRI
-      async function fetchCurrencyConversion() {
-        const container = document.getElementById("currencyConversion");
-        try {
-          // Contoh request ke API BRI Valas (sesuaikan endpoint dan headers)
-          const res = await fetch("https://sandbox.bri.co.id/api/valas/rate", {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer your_access_token", // Ganti dengan token asli
-              "Content-Type": "application/json",
-              "X-BRI-API-Key": "your_api_key", // Jika API Key diperlukan
-            },
-          });
+      // // Fungsi fetch konversi mata uang dari API BRI
+      // async function fetchCurrencyConversion() {
+      //   const container = document.getElementById("currencyConversion");
+      //   try {
+      //     // Contoh request ke API BRI Valas (sesuaikan endpoint dan headers)
+      //     const res = await fetch("https://sandbox.bri.co.id/api/valas/rate", {
+      //       method: "GET",
+      //       headers: {
+      //         Authorization: "Bearer your_access_token", // Ganti dengan token asli
+      //         "Content-Type": "application/json",
+      //         "X-BRI-API-Key": "your_api_key", // Jika API Key diperlukan
+      //       },
+      //     });
 
-          if (!res.ok)
-            throw new Error(`Error fetching currency rates: ${res.status}`);
+      //     if (!res.ok)
+      //       throw new Error(`Error fetching currency rates: ${res.status}`);
 
-          const data = await res.json();
+      //     const data = await res.json();
 
-          // Misal data.valas berisi array mata uang dengan kursnya
-          // Contoh: [{ currency: "USD", buy: 14500, sell: 14600 }, {...}]
-          // Adjust sesuai struktur response asli
+      //     // Misal data.valas berisi array mata uang dengan kursnya
+      //     // Contoh: [{ currency: "USD", buy: 14500, sell: 14600 }, {...}]
+      //     // Adjust sesuai struktur response asli
 
-          const valasRates = data.valas || [];
+      //     const valasRates = data.valas || [];
 
-          if (!valasRates.length) {
-            container.textContent = "Data konversi tidak tersedia";
-            return;
-          }
+      //     if (!valasRates.length) {
+      //       container.textContent = "Data konversi tidak tersedia";
+      //       return;
+      //     }
 
-          // Cari rate mata uang tertentu
-          const usd = valasRates.find((c) => c.currency === "USD");
-          const eur = valasRates.find((c) => c.currency === "EUR");
-          const jpy = valasRates.find((c) => c.currency === "JPY");
+      //     // Cari rate mata uang tertentu
+      //     const usd = valasRates.find((c) => c.currency === "USD");
+      //     const eur = valasRates.find((c) => c.currency === "EUR");
+      //     const jpy = valasRates.find((c) => c.currency === "JPY");
 
-          container.innerHTML = `
-          💰 <strong>Konversi Mata Uang:</strong><br>
-          Pendapatan bulan ini:<br>
-          • IDR: Rp 75,000<br>
-          • USD: $${usd ? usd.sell.toFixed(2) : "--"}<br>
-          • EUR: €${eur ? eur.sell.toFixed(2) : "--"}<br>
-          • JPY: ¥${jpy ? jpy.sell.toFixed(0) : "--"}
-        `;
-        } catch (error) {
-          container.textContent = "Gagal mengambil data konversi mata uang.";
-          console.error(error);
-        }
-      }
+      //     container.innerHTML = `
+      //     💰 <strong>Konversi Mata Uang:</strong><br>
+      //     Pendapatan bulan ini:<br>
+      //     • IDR: Rp 75,000<br>
+      //     • USD: $${usd ? usd.sell.toFixed(2) : "--"}<br>
+      //     • EUR: €${eur ? eur.sell.toFixed(2) : "--"}<br>
+      //     • JPY: ¥${jpy ? jpy.sell.toFixed(0) : "--"}
+      //   `;
+      //   } catch (error) {
+      //     container.textContent = "Gagal mengambil data konversi mata uang.";
+      //     console.error(error);
+      //   }
+      // }
 
-      fetchCurrencyConversion();
+      // fetchCurrencyConversion();
     </script>
     <script src="assets/js/loadNavbar.js"></script>
   </body>
