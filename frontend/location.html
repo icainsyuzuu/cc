@@ -209,8 +209,7 @@
       if (searchTerm) {
         filteredData = filteredData.filter(bank =>
           bank.name.toLowerCase().includes(searchTerm) ||
-          bank.address.toLowerCase().includes(searchTerm) ||
-          bank.manager.toLowerCase().includes(searchTerm)
+          bank.address.toLowerCase().includes(searchTerm)
         );
       }
 
