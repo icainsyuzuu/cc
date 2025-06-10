@@ -18,7 +18,6 @@ WasteRecordRouter.get('/user/:user_id', getWasteRecordsByUserId);
 WasteRecordRouter.get('/:id', getWasteRecordsById);
 // POST /api/waste/user/:user_id - Buat waste record baru untuk user
 WasteRecordRouter.post('/user/:user_id', uploadImage, createWasteRecordByUserId);
-
 // PUT /api/waste/:id - Update waste record berdasarkan ID
 WasteRecordRouter.put('/:id', updateWasteRecordById);
 // DELETE /api/waste/:id - Hapus waste record berdasarkan ID

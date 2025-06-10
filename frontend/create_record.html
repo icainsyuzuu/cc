@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Waste Record - EcoWaste</title>
+    <title>Create Waste Record - EcoWaste</title>
     <link rel="stylesheet" href="assets/css/style.css" />
     <style>
         .container {
@@ -64,7 +64,7 @@
     <div id="navbar-container"></div>
 
     <div class="container">
-        <h1 id="pageTitle">🗑️ Waste Record</h1>
+        <h1 id="pageTitle">🗑️ Create Waste Record</h1>
 
         <form id="wasteRecordForm">
             <label for="locationId">Location:</label>
@@ -85,7 +85,7 @@
             <input type="date" id="dateCollected" required /><br><br>
 
             <label for="image">Image:</label>
-            <input type="file" id="image" accept="image/*" /><br><br>
+            <input type="file" id="image" accept="image/*" required /><br><br>
             <img id="imagePreview" src="#" alt="Image Preview" class="image-preview" style="display:none;" /><br><br>
 
             <button type="submit" class="mockup-button" id="saveButton">💾 Simpan</button>
@@ -107,15 +107,6 @@
             alert("Silakan login terlebih dahulu!");
             window.location.href = "index.html";
         }
-
-        // Function to get waste record ID from URL parameters
-        function getWasteRecordId() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id');
-        }
-
-        const wasteRecordId = getWasteRecordId();
-        const isUpdateMode = !!wasteRecordId; // Check if wasteRecordId exists
 
         // Function to fetch waste types and populate the dropdown
         async function loadWasteTypes() {
@@ -204,54 +195,6 @@
             }
         }
 
-        // Function to load waste record data for update
-        async function loadWasteRecordData() {
-            try {
-                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                    },
-                });
-                if (!res.ok) {
-                    if (res.status === 404) {
-                        alert("Data penyetoran dengan ID tersebut tidak ditemukan.");
-                        window.location.href = "waste_history.html"; // Redirect to history page
-                        return;
-                    } else if (res.status === 401) {
-                        alert("Otorisasi gagal. Silakan login kembali.");
-                        window.location.href = "index.html"; // Redirect to login
-                        return;
-                    } else {
-                        throw new Error(`Gagal mengambil data: ${res.status} ${res.statusText}`);
-                    }
-                }
-
-                const result = await res.json();
-                if (result.status === "success") {
-                    const wasteRecord = result.data;
-                    console.log("Waste Record Data:", wasteRecord);
-                    document.getElementById("locationId").value = wasteRecord.location_id;
-                    document.getElementById("wasteId").value = wasteRecord.waste_id;
-                    document.getElementById("weight").value = wasteRecord.weight;
-                    if (wasteRecord.date_collected) {
-                        document.getElementById("dateCollected").value = wasteRecord.date_collected.split('T')[0]; // Format date
-                    } else {
-                        // Berikan nilai default atau biarkan kosong
-                        document.getElementById("dateCollected").value = ""; // Contoh: Biarkan kosong
-                    }
-                        if (wasteRecord.image_url) {
-                            document.getElementById('imagePreview').src = wasteRecord.image_url;
-                            document.getElementById('imagePreview').style.display = 'block';
-                        }
-
-                } else {
-                    alert("Failed to load waste record data: " + result.message);
-                }
-            } catch (err) {
-                alert("Error loading waste record data: " + err.message);
-            }
-        }
-
         document.getElementById("wasteRecordForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -263,9 +206,7 @@
             const wasteId = document.getElementById("wasteId").value;
             const weight = document.getElementById("weight").value;
             const dateCollected = document.getElementById("dateCollected").value;
-            // if (!isUpdateMode) {
-                const imageFile = document.getElementById("image").files[0];
-            // }
+            const imageFile = document.getElementById("image").files[0];
 
             try {
                 const formData = new FormData();
@@ -273,18 +214,10 @@
                 formData.append("waste_id", wasteId);
                 formData.append("weight", weight);
                 formData.append("date_collected", dateCollected);
-                // if (!isUpdateMode) {
-                    if (imageFile) {
-                        formData.append("image", imageFile);
-                    }
-                // }
+                formData.append("image", imageFile);
 
-                const method = isUpdateMode ? "PUT" : "POST";
-                const endpoint = isUpdateMode ? `${BASE_URL}/waste-record/${wasteRecordId}` :
-                    `${BASE_URL}/waste-record/user/${userId}`;
-
-                const res = await fetch(endpoint, {
-                    method: method,
+                const res = await fetch(`${BASE_URL}/waste-record/user/${userId}`, {
+                    method: "POST",
                     headers: {
                         Authorization: "Bearer " + token,
                     },
@@ -292,8 +225,8 @@
                 });
 
                 const result = await res.json();
-                if (!res.ok) throw new Error(result.message || "Failed to create/update waste record");
-                alert("Waste record berhasil " + (isUpdateMode ? "diperbarui" : "dibuat"));
+                if (!res.ok) throw new Error(result.message || "Failed to create waste record");
+                alert("Waste record berhasil dibuat");
                 window.location.href = "waste_history.html";
             } catch (err) {
                 alert("Error: " + err.message);
@@ -304,15 +237,6 @@
         function initializePage() {
             loadWasteTypes();
             loadLocations();
-
-            if (isUpdateMode) {
-                document.getElementById("pageTitle").textContent = "✏️ Edit Waste Record";
-                document.getElementById("saveButton").textContent = "💾 Update";
-                loadWasteRecordData();
-            } else {
-                document.getElementById("pageTitle").textContent = "🗑️ Create Waste Record";
-                document.getElementById("saveButton").textContent = "💾 Simpan";
-            }
         }
 
         initializePage();

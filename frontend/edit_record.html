@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit Waste Record - EcoWaste</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        input[type="date"],
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container">
+        <h1 id="pageTitle">✏️ Edit Waste Record</h1>
+
+        <form id="wasteRecordForm" novalidate>
+            <label for="locationId">Location:</label>
+            <select id="locationId" required>
+                <option value="" disabled selected>Pilih Lokasi</option>
+            </select><br><br>
+
+            <label for="wasteId">Waste Type:</label>
+            <select id="wasteId" required>
+                <option value="" disabled selected>Pilih Tipe Sampah</option>
+            </select><br><br>
+
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" required min="0.1" step="0.01" /><br>
+            <div id="weightError" class="error-message"></div><br>
+
+            <label for="dateCollected">Date Collected:</label>
+            <input type="date" id="dateCollected" required /><br><br>
+
+            <button type="submit" id="saveButton" class="mockup-button">💾 Update</button>
+        </form>
+
+        <br><a href="waste_history.html">← Kembali ke Waste History</a>
+    </div>
+
+    <script type="module">
+        import { BASE_URL } from "./config.js";
+
+
+        // Get waste record ID from URL params
+        function getWasteRecordId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        const wasteRecordId = getWasteRecordId();
+        if (!wasteRecordId) {
+            alert("ID data tidak valid. Mengalihkan ke halaman riwayat.");
+            window.location.href = "waste_history.html";
+        }
+
+        const token = sessionStorage.getItem("accessToken");
+
+        // Load waste types dropdown
+        async function loadWasteTypes() {
+        try {
+            const res = await fetch(`${BASE_URL}/waste/`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const result = await res.json();
+            if (result.success) {
+                const wasteTypes = result.data;
+                const selectElement = document.getElementById("wasteId");
+                wasteTypes.forEach(waste => {
+                    const option = document.createElement("option");
+                    option.value = waste.id;
+                    option.textContent = waste.type;
+                    selectElement.appendChild(option);
+                });
+            } else {
+                alert("Gagal memuat tipe sampah: " + result.message);
+            }
+        } catch (err) {
+            alert("Error memuat tipe sampah: " + err.message);
+        }
+    }
+
+        // Load locations dropdown
+        async function loadLocations() {
+            try {
+                const token = sessionStorage.getItem("accessToken");
+                const res = await fetch(`${BASE_URL}/locations/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                const result = await res.json();
+                if (result.status === "success") {
+                    const locations = result.data;
+                    const selectElement = document.getElementById("locationId");
+                    locations.forEach(location => {
+                        const option = document.createElement("option");
+                        option.value = location.id;
+                        option.textContent = location.name;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    alert("Gagal memuat lokasi: " + result.message);
+                }
+            } catch (err) {
+                alert("Error memuat lokasi: " + err.message);
+            }
+        }
+
+        // Load existing waste record data
+        async function loadWasteRecordData() {
+            try {
+                const token = sessionStorage.getItem("accessToken");
+                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                if (!res.ok) {
+                    if (res.status === 404) {
+                        alert("Data penyetoran dengan ID tersebut tidak ditemukan.");
+                        window.location.href = "waste_history.html";
+                        return;
+                    } else if (res.status === 401) {
+                        alert("Otorisasi gagal. Silakan login kembali.");
+                        window.location.href = "index.html";
+                        return;
+                    } else {
+                        throw new Error(`Gagal mengambil data: ${res.status} ${res.statusText}`);
+                    }
+                }
+                const result = await res.json();
+                if (result.status === "success") {
+                    let wasteRecord = result.data;
+                    document.getElementById("locationId").value = wasteRecord.location_id;
+                    document.getElementById("wasteId").value = wasteRecord.waste_id;
+                    document.getElementById("weight").value = wasteRecord.weight;
+                    if (wasteRecord.date_collected) {
+                        document.getElementById("dateCollected").value = wasteRecord.date_collected.split('T')[0];
+                    } else {
+                        document.getElementById("dateCollected").value = "";
+                    }
+                } else {
+                    alert("Gagal memuat data: " + result.message);
+                }
+            } catch (err) {
+                alert("Error memuat data: " + err.message);
+            }
+        }
+
+        // Weight validation
+        function validateWeight() {
+            const weightInput = document.getElementById("weight");
+            const weightError = document.getElementById("weightError");
+            const weight = parseFloat(weightInput.value);
+
+            if (!weight || weight <= 0) {
+                weightError.textContent = "Berat harus lebih dari 0.";
+                return false;
+            }
+            weightError.textContent = "";
+            return true;
+        }
+
+        // Form submit handler
+        document.getElementById("wasteRecordForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!validateWeight()) {
+                return;
+            }
+            const locationId = document.getElementById("locationId").value;
+            const wasteId = document.getElementById("wasteId").value;
+            const weight = document.getElementById("weight").value;
+            const dateCollected = document.getElementById("dateCollected").value;
+
+            try {
+                const token = sessionStorage.getItem("accessToken");
+                const payload = {
+                    location_id: locationId,
+                    waste_id: wasteId,
+                    weight: weight,
+                    date_collected: dateCollected
+                };
+
+                const endpoint = `${BASE_URL}/waste-record/${wasteRecordId}`;
+                const res = await fetch(endpoint, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errorResult = await res.json();
+                    let errorMessage = `HTTP error! Status: ${res.status}, Message: ${errorResult.message || 'No message'}`;
+
+                    if (res.status === 401) {
+                        alert("Otorisasi gagal. Silakan login kembali.");
+                        sessionStorage.removeItem("accessToken");
+                        sessionStorage.removeItem("userId");
+                        window.location.href = "index.html";
+                        return;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const result = await res.json();
+                if (result.status !== "success") {
+                    throw new Error(result.message || "Failed to update waste record");
+                }
+                alert("Waste record berhasil diperbarui");
+                window.location.href = "waste_history.html";
+            } catch (err) {
+                console.error("Error updating waste record:", err);
+                alert("Error: " + err.message);
+            }
+        });
+
+        // Initialize page (load types, locations, and data)
+        function initializePage() {
+            loadWasteTypes();
+            loadLocations();
+            loadWasteRecordData();
+        }
+
+        initializePage();
+    </script>
+    <script src="assets/js/loadNavbar.js"></script>
+</body>
+
+</html>
