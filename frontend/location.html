@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EcoWaste Manager - Lokasi TPS Terdekat</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
- 
+
 </head>
+
 <body>
 
   <!-- Navbar akan dimuat di sini oleh loadNavbar.js -->
@@ -61,128 +63,52 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-  
 
-  <script>
-    const bankSampahData = [
-      {
-        name: "Bank Sampah Melati Bersih",
-        province: "DKI Jakarta",
-        city: "Jakarta Selatan",
-        address: "Jl. Kemang Raya No. 123",
-        lat: -6.2615,
-        lng: 106.8106,
-        contact: "021-12345678",
-        manager: "Ibu Sari Melati",
-        established: "2020",
-        members: 150,
-        wasteTypes: ["Plastik", "Kertas", "Logam", "Kaca"]
-      },
-      {
-        name: "Bank Sampah Hijau Lestari",
-        province: "Jawa Barat",
-        city: "Bandung",
-        address: "Jl. Dipatiukur No. 45",
-        lat: -6.8957,
-        lng: 107.6338,
-        contact: "022-87654321",
-        manager: "Bapak Ahmad Hijau",
-        established: "2019",
-        members: 200,
-        wasteTypes: ["Plastik", "Kertas", "Elektronik"]
-      },
-      {
-        name: "Bank Sampah Kartini",
-        province: "Jawa Tengah",
-        city: "Semarang",
-        address: "Jl. Kartini No. 67",
-        lat: -6.9667,
-        lng: 110.4167,
-        contact: "024-11223344",
-        manager: "Ibu Kartini Sari",
-        established: "2021",
-        members: 180,
-        wasteTypes: ["Plastik", "Kertas", "Organik"]
-      },
-      {
-        name: "Bank Sampah Mahkota",
-        province: "Jawa Timur",
-        city: "Surabaya",
-        address: "Jl. Raya Darmo No. 89",
-        lat: -7.2504,
-        lng: 112.7688,
-        contact: "031-55667788",
-        manager: "Bapak Bambang Mahkota",
-        established: "2018",
-        members: 250,
-        wasteTypes: ["Plastik", "Kertas", "Logam", "Kaca", "Elektronik"]
-      },
-      {
-        name: "Bank Sampah Bali Hijau",
-        province: "Bali",
-        city: "Denpasar",
-        address: "Jl. Sunset Road No. 12",
-        lat: -8.6500,
-        lng: 115.2167,
-        contact: "0361-998877",
-        manager: "I Made Hijau",
-        established: "2020",
-        members: 120,
-        wasteTypes: ["Plastik", "Kertas", "Organik", "Kaca"]
-      },
-      {
-        name: "Bank Sampah Medan Bersih",
-        province: "Sumatera Utara",
-        city: "Medan",
-        address: "Jl. Sisingamangaraja No. 56",
-        lat: 3.5952,
-        lng: 98.6722,
-        contact: "061-44556677",
-        manager: "Ibu Maria Bersih",
-        established: "2019",
-        members: 175,
-        wasteTypes: ["Plastik", "Kertas", "Logam"]
-      },
-      {
-        name: "Bank Sampah Makassar Indah",
-        province: "Sulawesi Selatan",
-        city: "Makassar",
-        address: "Jl. A.P. Pettarani No. 78",
-        lat: -5.1477,
-        lng: 119.4327,
-        contact: "0411-22334455",
-        manager: "Bapak Andi Indah",
-        established: "2021",
-        members: 160,
-        wasteTypes: ["Plastik", "Kertas", "Organik", "Logam"]
-      },
-      {
-        name: "Bank Sampah Yogya Kreatif",
-        province: "DI Yogyakarta",
-        city: "Yogyakarta",
-        address: "Jl. Malioboro No. 34",
-        lat: -7.7956,
-        lng: 110.3695,
-        contact: "0274-66778899",
-        manager: "Ibu Sri Kreatif",
-        established: "2020",
-        members: 140,
-        wasteTypes: ["Plastik", "Kertas", "Kaca", "Elektronik"]
-      },
-      {
-        name: "Bank Sampah Yogya Kreatif",
-        province: "DI Yogyakartaa",
-        city: "Yogyakartaa",
-        address: "Jl. Malioboro No. 34",
-        lat: -7.8956,
-        lng: 111.3695,
-        contact: "0274-66778899",
-        manager: "Ibu Sri Kreatif",
-        established: "2020",
-        members: 140,
-        wasteTypes: ["Plastik", "Kertas", "Kaca", "Elektronik"]
+  <script type="module" src="config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { BASE_URL } from "./config.js";
+    import { refreshAccessTokenIfNeeded } from "./auth.js";
+
+
+
+    async function fetchBankSampahData() {
+      await refreshAccessTokenIfNeeded();
+
+      try {
+        const token = sessionStorage.getItem("accessToken");
+        const res = await fetch(`${BASE_URL}/locations`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const result = await res.json();
+        if (result.status === "success" && Array.isArray(result.data)) {
+          return result.data.map(item => ({
+            name: item.name,
+            province: item.province.trim(),
+            city: item.city.trim(),
+            address: item.address,
+            lat: item.latitude,
+            lng: item.longitude,
+            wasteTypes: item.waste_type ? [item.waste_type] : ["-"]
+          }));
+        } else {
+          console.error("Data tidak valid dari server:", result);
+          return [];
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data bank sampah:", error);
+        return [];
       }
-    ];
+    }
+
+    (async() => {
+
+    
+    
+    let bankSampahData = await fetchBankSampahData();
 
     // Inisialisasi peta Leaflet
     const map = L.map('map').setView([-2.5489, 118.0149], 5);
@@ -211,12 +137,9 @@
           </div>
           <div class="popup-info">
             <div><span>📍 Alamat:</span> <strong>${bank.address}</strong></div>
+            <div><span>🌆 Provinsi:</span> <strong>${bank.province}</strong></div>
             <div><span>🌆 Kota:</span> <strong>${bank.city}</strong></div>
-            <div><span>📱 Kontak:</span> <strong>${bank.contact}</strong></div>
-            <div><span>👤 Pengelola:</span> <strong>${bank.manager}</strong></div>
-            <div><span>📅 Berdiri:</span> <strong>${bank.established}</strong></div>
-            <div><span>👥 Anggota:</span> <strong>${bank.members} orang</strong></div>
-            <div><span>♻️ Jenis Sampah:</span> <strong>${bank.wasteTypes.join(', ')}</strong></div>
+            <div><span>♻️ Jenis Sampah:</span> <strong>${bank.wasteTypes}</strong></div>
           </div>
         </div>
       `;
@@ -284,7 +207,7 @@
       }
 
       if (searchTerm) {
-        filteredData = filteredData.filter(bank => 
+        filteredData = filteredData.filter(bank =>
           bank.name.toLowerCase().includes(searchTerm) ||
           bank.address.toLowerCase().includes(searchTerm) ||
           bank.manager.toLowerCase().includes(searchTerm)
@@ -300,7 +223,7 @@
       }
     }
 
-    document.getElementById('provinceFilter').addEventListener('change', function() {
+    document.getElementById('provinceFilter').addEventListener('change', function () {
       populateCityFilter(bankSampahData, this.value);
       filterData();
     });
@@ -315,7 +238,10 @@
     setTimeout(() => {
       map.invalidateSize();
     }, 100);
+
+    })();
   </script>
-<script src="assets/js/loadNavbar.js"></script> 
+  <script src="assets/js/loadNavbar.js"></script>
 </body>
+
 </html>

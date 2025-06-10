@@ -57,7 +57,11 @@
 
     </div>
 
-    <script>
+  <script type="module" src="config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { BASE_URL } from "./config.js";
+    import { refreshAccessTokenIfNeeded } from "./auth.js";
       // Update time every second for Real-Time Clock
       function updateTime() {
         const now = new Date();
@@ -87,7 +91,7 @@
 
       // Dashboard functionality
       document.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("accessToken");
 
         if (!token) {
           alert("Silakan login terlebih dahulu!");
@@ -97,7 +101,7 @@
         async function fetchDashboardData() {
           try {
             const res = await fetch(
-              "http://localhost:3000/api/user/dashboard",
+              `${BASE_URL}/user/dashboard`,
               {
                 headers: {
                   Authorization: "Bearer " + token,
@@ -144,7 +148,7 @@
 
               try {
                 const response = await fetch(
-                  `http://localhost:3000/api/locations/nearby?lat=${lat}&lon=${lon}`,
+                  `${BASE_URL}/locations`,
                   {
                     headers: {
                       Authorization: "Bearer " + token,

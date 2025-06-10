@@ -86,7 +86,7 @@
           sessionStorage.setItem('accessToken', accessToken);
           sessionStorage.setItem('expire', decoded.exp);
           sessionStorage.setItem('email', decoded.email);
-          sessionStorage.setItem('userId', decoded.id);
+          sessionStorage.setItem('userId', decoded.userId);
 
           alert(`Login successful, Welcome ${email}!`);
           window.location.href = 'dashboard.html';
