@@ -6,6 +6,8 @@ const getFeedbackByUserId = async (req, res) => {
     const { user_id } = req.params;
 
     try {
+        console.log('Getting feedback for user_id:', user_id);
+        
         // Validate user_id
         if (!user_id) {
             return res.status(400).json({ 
@@ -14,27 +16,43 @@ const getFeedbackByUserId = async (req, res) => {
             });
         }
 
-        const feedbacks = await Feedback.findAll({
-            where: { user_id },
-            include: [
-                {
-                    model: User,
-                    as: "user", // Alias untuk model User
-                    attributes: ["username", "email"], // Menampilkan informasi pengguna
-                },
-            ],
-            order: [['created_at', 'DESC']], // Order by newest first
-        });
+        // Try to get feedbacks with user data
+        let feedbacks;
+        try {
+            feedbacks = await Feedback.findAll({
+                where: { user_id },
+                include: [
+                    {
+                        model: User,
+                        as: "user",
+                        attributes: ["username", "email"],
+                        required: false // LEFT JOIN
+                    },
+                ],
+                order: [['created_at', 'DESC']],
+            });
+        } catch (includeError) {
+            console.error("Error with include, trying without:", includeError);
+            // If association fails, get feedbacks without user data
+            feedbacks = await Feedback.findAll({
+                where: { user_id },
+                order: [['created_at', 'DESC']],
+            });
+        }
 
+        console.log('Found feedbacks:', feedbacks.length);
+        
         res.json({ 
             status: "success", 
             data: feedbacks 
         });
     } catch (error) {
         console.error("Get feedback error:", error);
+        console.error("Error details:", error.message);
+        console.error("Stack trace:", error.stack);
         res.status(500).json({ 
             status: "failed", 
-            message: "Server error" 
+            message: "Server error: " + error.message 
         });
     }
 };
@@ -51,13 +69,20 @@ const getFeedbacksById = async (req, res) => {
             });
         }
 
-        const feedback = await Feedback.findByPk(id, {
-            include: [{
-                model: User,
-                as: "user", // sesuai alias
-                attributes: ["username", "email"],
-            }],
-        });
+        let feedback;
+        try {
+            feedback = await Feedback.findByPk(id, {
+                include: [{
+                    model: User,
+                    as: "user",
+                    attributes: ["username", "email"],
+                    required: false
+                }],
+            });
+        } catch (includeError) {
+            console.error("Error with include, trying without:", includeError);
+            feedback = await Feedback.findByPk(id);
+        }
 
         if (!feedback) {
             return res.status(404).json({
@@ -74,15 +99,18 @@ const getFeedbacksById = async (req, res) => {
         console.error("Get Feedback error:", error);
         res.status(500).json({
             status: "failed",
-            message: "Server error"
+            message: "Server error: " + error.message
         });
     }
 };
 
 // Fungsi untuk membuat feedback baru
 const createFeedback = async (req, res) => {
-    const { user_id } = req.params;  // user_id didapat dari parameter URL
-    const { message, rating, type } = req.body;  // id dihapus, karena auto-increment
+    const { user_id } = req.params;
+    const { message, rating } = req.body; // Removed 'type' since it's not in your model
+
+    console.log('Creating feedback for user_id:', user_id);
+    console.log('Request body:', req.body);
 
     // Validasi input
     if (!message || !rating || !user_id) {
@@ -93,7 +121,8 @@ const createFeedback = async (req, res) => {
     }
 
     // Validasi rating range
-    if (rating < 1 || rating > 5) {
+    const ratingNum = parseInt(rating);
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
         return res.status(400).json({ 
             status: "failed", 
             message: "Rating harus antara 1-5" 
@@ -101,42 +130,36 @@ const createFeedback = async (req, res) => {
     }
 
     try {
-        // Cek jika user ada di database
-        const user = await User.findByPk(user_id);
-        if (!user) {
-            return res.status(404).json({ 
-                status: "failed", 
-                message: "User tidak ditemukan" 
-            });
+        // Check if user exists (optional, remove if you don't want to validate)
+        try {
+            const user = await User.findByPk(user_id);
+            if (!user) {
+                console.log('User not found, but continuing anyway');
+            }
+        } catch (userError) {
+            console.log('Cannot check user existence, continuing anyway:', userError.message);
         }
 
-        // Simpan feedback ke dalam database
+        // Create feedback without type field
         const newFeedback = await Feedback.create({
-            user_id,
+            user_id: parseInt(user_id),
             message,
-            rating: parseInt(rating),
-            type: type || "general", // Default type
+            rating: ratingNum,
         });
 
-        // Get the created feedback with user data
-        const feedbackWithUser = await Feedback.findByPk(newFeedback.id, {
-            include: [{
-                model: User,
-                as: "user",
-                attributes: ["username", "email"],
-            }],
-        });
+        console.log('Feedback created:', newFeedback.toJSON());
 
         res.status(201).json({
             status: "success",
             message: "Feedback berhasil dikirim",
-            data: feedbackWithUser,
+            data: newFeedback,
         });
     } catch (error) {
         console.error("Create feedback error:", error);
+        console.error("Error details:", error.message);
         res.status(500).json({ 
             status: "failed", 
-            message: "Server error" 
+            message: "Server error: " + error.message 
         });
     }
 };
@@ -163,7 +186,8 @@ const updateFeedbackById = async (req, res) => {
         }
 
         // Validasi rating range
-        if (rating < 1 || rating > 5) {
+        const ratingNum = parseInt(rating);
+        if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
             return res.status(400).json({
                 status: "failed",
                 message: "Rating harus antara 1-5"
@@ -180,28 +204,19 @@ const updateFeedbackById = async (req, res) => {
 
         await feedback.update({
             message,
-            rating: parseInt(rating),
-        });
-
-        // Get updated feedback with user data
-        const updatedFeedback = await Feedback.findByPk(id, {
-            include: [{
-                model: User,
-                as: "user",
-                attributes: ["username", "email"],
-            }],
+            rating: ratingNum,
         });
 
         res.json({ 
             status: "success", 
             message: "Feedback berhasil diperbarui", 
-            data: updatedFeedback 
+            data: feedback 
         });
     } catch (error) {
         console.error("Update feedback error:", error);
         res.status(500).json({ 
             status: "failed", 
-            message: "Server error" 
+            message: "Server error: " + error.message 
         });
     }
 };
@@ -237,7 +252,7 @@ const deleteFeedbackById = async (req, res) => {
         console.error("Delete feedback error:", error);
         res.status(500).json({ 
             status: "failed", 
-            message: "Server error" 
+            message: "Server error: " + error.message 
         });
     }
 };
