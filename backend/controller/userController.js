@@ -111,11 +111,56 @@ async function deleteProfile(req, res) {
   }
 }
 
+const uploadPhotoProfile = async (req, res) => {
+  const { user_id } = req.params;
+
+  if (!req.file) {
+    return res.status(400).json({ status: "failed", message: "Image file is required" });
+  }
+
+  try {
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ status: "failed", message: "User tidak ditemukan" });
+    }
+
+    const blob = bucket.file(`waste-images/${Date.now()}_${req.file.originalname}`);
+    const blobStream = blob.createWriteStream({
+      resumable: false,
+      contentType: req.file.mimetype,
+      predefinedAcl: "publicRead",
+    });
+
+    blobStream.on("error", (err) => {
+      console.error("Upload error:", err);
+      res.status(500).json({ status: "failed", message: "Failed to upload image" });
+    });
+
+    blobStream.on("finish", async () => {
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+
+      const newPhoto = await User.create({
+        profile_image: publicUrl,
+      });
+
+      // Update eco_points user
+      await user.update({ eco_points: user.eco_points + earnedPoints });
+
+      res.status(201).json({ status: "success", message: "Data berhasil dibuat", data: newPhoto });
+    });
+
+    blobStream.end(req.file.buffer);
+  } catch (error) {
+    console.error("Create record error:", error);
+    res.status(500).json({ status: "failed", message: "Server error" });
+  }
+};
 
 
 export {
     getDashboard,
     getProfile,
     updateProfile,
-    deleteProfile
+    deleteProfile,
+    uploadPhotoProfile
 }

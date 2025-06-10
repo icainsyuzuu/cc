@@ -6,8 +6,10 @@ import {
     getDashboard,
     getProfile,
     updateProfile,
-    deleteProfile
+    deleteProfile,
+    uploadPhotoProfile
 } from '../controller/userController.js';
+import { uploadImage } from '../middleware/uploadImage.js';
 
 const userRouter = express.Router();
 userRouter.get('/dashboard', authMiddleware, getDashboard);
@@ -17,6 +19,8 @@ userRouter.get('/profile', authMiddleware, getProfile);
 userRouter.put('/profile', authMiddleware, updateProfile);
 // delete user
 userRouter.delete('/profile', authMiddleware, deleteProfile);
+// POST /api/waste/user/:user_id - Buat waste record baru untuk user
+userRouter.post('/profile/:user_id', authMiddleware, uploadImage, uploadPhotoProfile);
 
 // export default userRouter;
 export { userRouter };
