@@ -19,7 +19,8 @@ userRouter.get('/profile', authMiddleware, getProfile);
 userRouter.put('/profile', authMiddleware, updateProfile);
 // delete user
 userRouter.delete('/profile', authMiddleware, deleteProfile);
-// POST /api/waste/user/:user_id - Buat waste record baru untuk user
+
+// photo profile
 userRouter.post('/profile/:user_id', authMiddleware, uploadImage, uploadPhotoProfile);
 
 // export default userRouter;

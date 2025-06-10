@@ -139,12 +139,9 @@ const uploadPhotoProfile = async (req, res) => {
     blobStream.on("finish", async () => {
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
 
-      const newPhoto = await User.create({
+      const newPhoto = await User.update({
         profile_image: publicUrl,
       });
-
-      // Update eco_points user
-      await user.update({ eco_points: user.eco_points + earnedPoints });
 
       res.status(201).json({ status: "success", message: "Data berhasil dibuat", data: newPhoto });
     });
