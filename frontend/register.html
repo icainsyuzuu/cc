@@ -1,81 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>EcoWaste Manager - Register</title>
-<style>
-  /* Style sama dengan index.html, hanya container lebih besar */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
-    padding: 20px;
-    min-height: 100vh;
-  }
-  .container {
-    max-width: 500px;
-    margin: 60px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  }
-  h1 {
-    color: #2e7d32;
-    font-size: 2em;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  p.subtitle {
-    color: #666;
-    font-size: 1em;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  label {
-    display: block;
-    font-weight: bold;
-    margin-top: 15px;
-    color: #4caf50;
-  }
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  button {
-    width: 100%;
-    background: #4caf50;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    margin-top: 25px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #45a049;
-  }
-  .login-btn {
-    background: #ff9800;
-    margin-top: 15px;
-  }
-  .login-btn:hover {
-    background: #f57c00;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EcoWaste Manager - Register</title>
+  <style>
+    /* Style sama dengan index.html, hanya container lebih besar */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #2e7d32;
+      font-size: 2em;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: 1em;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      color: #4caf50;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      background: #4caf50;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .login-btn {
+      background: #ff9800;
+      margin-top: 15px;
+    }
+
+    .login-btn:hover {
+      background: #f57c00;
+    }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <h1>🌱 Daftar EcoWaste Manager</h1>
@@ -95,38 +107,44 @@
     </form>
   </div>
 
-<script>
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  <script type="module" src="config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { BASE_URL } from "./config.js";
+    import { refreshAccessTokenIfNeeded } from "./auth.js";
+    
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    const username = e.target.username.value.trim();
-    const email = e.target.email.value.trim();
-    const password = e.target.password.value.trim();
+      const username = e.target.username.value.trim();
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value.trim();
 
-    if (!username || !email || !password) {
-      alert('Semua field harus diisi!');
-      return;
-    }
-
-    try {
-      const res = await fetch('http://localhost:3000/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        alert('Pendaftaran berhasil! Silakan login.');
-        window.location.href = 'index.html';
-      } else {
-        alert('Pendaftaran gagal: ' + (data.message || 'Terjadi kesalahan'));
+      if (!username || !email || !password) {
+        alert('Semua field harus diisi!');
+        return;
       }
-    } catch (error) {
-      alert('Error saat pendaftaran: ' + error.message);
-    }
-  });
-</script>
+
+      try {
+        const res = await fetch(`${BASE_URL}/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          alert('Pendaftaran berhasil! Silakan login.');
+          window.location.href = 'index.html';
+        } else {
+          alert('Pendaftaran gagal: ' + (data.message || 'Terjadi kesalahan'));
+        }
+      } catch (error) {
+        alert('Error saat pendaftaran: ' + error.message);
+      }
+    });
+  </script>
 </body>
+
 </html>

@@ -1,61 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EcoWaste Manager - Log Sampah Baru</title>
   <style>
     * {
-      margin: 0; padding: 0; box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
     body {
       font-family: 'Arial', sans-serif;
       background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
       padding: 20px;
       min-height: 100vh;
     }
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
     }
+
     .header {
       text-align: center;
       margin-bottom: 30px;
       background: white;
       padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
+
     .header h1 {
       color: #2e7d32;
       font-size: 2.2em;
       margin-bottom: 8px;
     }
+
     .header p {
       color: #666;
       font-size: 1.1em;
     }
+
     .screens-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 25px;
     }
+
     .screen {
       background: white;
       border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       overflow: hidden;
       transition: transform 0.3s ease;
       display: none;
       flex-direction: column;
       max-height: 700px;
     }
+
     .screen.active {
       display: flex;
     }
+
     .screen:hover {
       transform: translateY(-3px);
     }
+
     .screen-header {
       background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
       color: white;
@@ -65,14 +78,17 @@
       font-size: 1.1em;
       user-select: none;
     }
+
     .screen-content {
       padding: 25px;
       overflow-y: auto;
       flex-grow: 1;
     }
+
     .form-group {
       margin-bottom: 20px;
     }
+
     .form-label {
       display: block;
       margin-bottom: 8px;
@@ -80,7 +96,9 @@
       color: #333;
       font-size: 0.95em;
     }
-    .form-input, select {
+
+    .form-input,
+    select {
       width: 100%;
       padding: 12px;
       border: 2px solid #e0e0e0;
@@ -88,16 +106,20 @@
       font-size: 0.95em;
       transition: border-color 0.3s ease;
     }
-    .form-input:focus, select:focus {
+
+    .form-input:focus,
+    select:focus {
       outline: none;
       border-color: #4caf50;
     }
+
     .category-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       margin-top: 10px;
     }
+
     .category-btn {
       padding: 15px;
       border: 2px solid #e0e0e0;
@@ -109,16 +131,19 @@
       font-size: 0.9em;
       user-select: none;
     }
+
     .category-btn:hover {
       border-color: #4caf50;
       background: #f3f8f3;
     }
+
     .category-btn.selected {
       border-color: #4caf50;
       background: #e8f5e8;
       color: #2e7d32;
       font-weight: bold;
     }
+
     .upload-area {
       border: 2px dashed #4caf50;
       border-radius: 10px;
@@ -130,15 +155,18 @@
       margin: 15px 0;
       user-select: none;
     }
+
     .upload-area:hover {
       background: #f0f8f0;
       border-color: #45a049;
     }
+
     .upload-icon {
       font-size: 3em;
       color: #4caf50;
       margin-bottom: 10px;
     }
+
     .btn-primary {
       background: #4caf50;
       color: white;
@@ -153,9 +181,11 @@
       transition: background 0.3s ease;
       user-select: none;
     }
+
     .btn-primary:hover {
       background: #45a049;
     }
+
     .btn-secondary {
       background: #ff9800;
       color: white;
@@ -169,9 +199,11 @@
       user-select: none;
       width: 48%;
     }
+
     .btn-secondary:hover {
       background: #f57c00;
     }
+
     .info-card {
       background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
       border-left: 4px solid #2196f3;
@@ -179,6 +211,7 @@
       border-radius: 8px;
       margin: 15px 0;
     }
+
     .success-card {
       background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
       border-left: 4px solid #4caf50;
@@ -187,6 +220,7 @@
       margin: 15px 0;
       text-align: center;
     }
+
     .points-display {
       background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
       border: 2px solid #ff9800;
@@ -195,11 +229,13 @@
       text-align: center;
       margin: 15px 0;
     }
+
     .points-number {
       font-size: 2em;
       font-weight: bold;
       color: #f57c00;
     }
+
     .location-display {
       background: #f5f5f5;
       border: 1px solid #ddd;
@@ -208,6 +244,7 @@
       margin: 10px 0;
       font-size: 0.9em;
     }
+
     .sensor-indicator {
       display: flex;
       align-items: center;
@@ -217,6 +254,7 @@
       margin: 10px 0;
       font-size: 0.9em;
     }
+
     .sensor-dot {
       width: 12px;
       height: 12px;
@@ -225,15 +263,26 @@
       margin-right: 8px;
       animation: pulse 2s infinite;
     }
+
     @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
+
     .weight-slider {
       width: 100%;
       margin: 15px 0;
     }
+
     .weight-display {
       text-align: center;
       font-size: 1.5em;
@@ -241,6 +290,7 @@
       color: #4caf50;
       margin: 10px 0;
     }
+
     .preview-image {
       width: 100%;
       height: 150px;
@@ -253,6 +303,7 @@
       margin: 10px 0;
       user-select: none;
     }
+
     .history-item {
       background: #f9f9f9;
       border-left: 4px solid #4caf50;
@@ -260,6 +311,7 @@
       margin: 10px 0;
       border-radius: 8px;
     }
+
     .tabs {
       display: flex;
       background: #f5f5f5;
@@ -267,6 +319,7 @@
       margin-bottom: 20px;
       overflow: hidden;
     }
+
     .tab {
       flex: 1;
       padding: 12px;
@@ -277,16 +330,19 @@
       background: transparent;
       user-select: none;
     }
+
     .tab.active {
       background: #4caf50;
       color: white;
       font-weight: bold;
     }
+
     .step-indicator {
       display: flex;
       justify-content: space-between;
       margin-bottom: 20px;
     }
+
     .step {
       flex: 1;
       text-align: center;
@@ -294,13 +350,16 @@
       position: relative;
       user-select: none;
     }
+
     .step.active {
       color: #4caf50;
       font-weight: bold;
     }
+
     .step.completed {
       color: #4caf50;
     }
+
     .step::after {
       content: '';
       position: absolute;
@@ -311,14 +370,17 @@
       background: #e0e0e0;
       z-index: -1;
     }
+
     .step.completed::after {
       background: #4caf50;
     }
+
     .step:last-child::after {
       display: none;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="header">
@@ -380,13 +442,13 @@
             • Tips: Cuci bersih sebelum buang
           </div>
           <button class="btn-primary" id="toStep2">➡️ Lanjut ke Detail</button>
-<button class="btn-secondary" id="backToDashboard">⬅️ Kembali</button>
+          <button class="btn-secondary" id="backToDashboard">⬅️ Kembali</button>
 
-<script>
-  document.getElementById('backToDashboard').addEventListener('click', () => {
-    window.location.href = 'dashboard.html';
-  });
-</script>
+          <script>
+            document.getElementById('backToDashboard').addEventListener('click', () => {
+              window.location.href = 'dashboard.html';
+            });
+          </script>
         </div>
       </div>
 
@@ -402,25 +464,12 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="descInput">📝 Deskripsi Sampah:</label>
-            <input
-              type="text"
-              id="descInput"
-              class="form-input"
-              placeholder="Contoh: Botol air mineral 600ml"
-              value="Botol plastik bekas minuman"
-            />
+            <input type="text" id="descInput" class="form-input" placeholder="Contoh: Botol air mineral 600ml"
+              value="Botol plastik bekas minuman" />
           </div>
           <div class="form-group">
             <label class="form-label" for="weightInput">⚖️ Berat Sampah (kg):</label>
-            <input
-              type="range"
-              id="weightInput"
-              class="weight-slider"
-              min="0.1"
-              max="10"
-              step="0.1"
-              value="1.5"
-            />
+            <input type="range" id="weightInput" class="weight-slider" min="0.1" max="10" step="0.1" value="1.5" />
             <div class="weight-display" id="weightDisplay">1.5 kg</div>
           </div>
           <div class="form-group">
@@ -460,7 +509,7 @@
           <div class="form-group">
             <button class="btn-secondary" id="refreshLocation">🔄 Refresh Lokasi</button>
           </div>
-          <div class="form-group" >
+          <div class="form-group">
             <label class="form-label">🗑️ Pilih Metode Pembuangan:</label>
             <div class="tabs" id="disposalTabs">
               <button class="tab active" data-method="bank" disabled>🏦 Bank Sampah</button>
@@ -480,48 +529,38 @@
           </div>
           <div class="form-group">
             <label class="form-label">🌍 Konversi Waktu:</label>
-            <div
-              style="
+            <div style="
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
                 font-size: 0.9em;
-              "
-            >
-              <div
-                style="
+              ">
+              <div style="
                   background: #f5f5f5;
                   padding: 8px;
                   border-radius: 5px;
-                "
-              >
+                ">
                 <strong>WIB:</strong> 14:30
               </div>
-              <div
-                style="
+              <div style="
                   background: #f5f5f5;
                   padding: 8px;
                   border-radius: 5px;
-                "
-              >
+                ">
                 <strong>WITA:</strong> 15:30
               </div>
-              <div
-                style="
+              <div style="
                   background: #f5f5f5;
                   padding: 8px;
                   border-radius: 5px;
-                "
-              >
+                ">
                 <strong>WIT:</strong> 16:30
               </div>
-              <div
-                style="
+              <div style="
                   background: #f5f5f5;
                   padding: 8px;
                   border-radius: 5px;
-                "
-              >
+                ">
                 <strong>London:</strong> 08:30
               </div>
             </div>
@@ -589,229 +628,284 @@
       </div>
     </div>
 
-<script>
-    const submitLogBtn = document.getElementById('submitLog');
+    <script type="module" src="config.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+      import { BASE_URL } from "./config.js";
+      import { refreshAccessTokenIfNeeded } from "./auth.js";
 
-submitLogBtn.addEventListener('click', async () => {
-  // Pastikan ada user_id, sesuaikan cara ambil user_id sesuai autentikasi anda
-  const userId = localStorage.getItem('user_id'); // Contoh, sesuaikan
+      // Fungsi untuk ambil dan tampilkan log sampah user
+      async function fetchWasteLogs(userId) {
+        await refreshAccessTokenIfNeeded();
 
-  if (!userId) {
-    alert('Anda harus login terlebih dahulu.');
-    window.location.href = 'index.html';
-    return;
-  }
+        try {
+          const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('token'),
+            },
+          });
 
-  // Siapkan data sesuai struktur tabel database
-  const payload = {
-    user_id: userId,
-    waste_type: formState.category,
-    weight: formState.weight,
-    location: formState.location,
-    date: new Date().toISOString(), // tanggal log saat ini, bisa disesuaikan
-    points_earned: formState.calculatedPoints || formState.points,
-  };
+          if (!response.ok) throw new Error('Gagal mengambil data log');
 
-  try {
-    const response = await fetch('http://localhost:3000/api/waste_logs', { // sesuaikan endpoint API backend
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('token'), // jika perlu auth token
-      },
-      body: JSON.stringify(payload),
-    });
+          const result = await response.json();
+          const logs = result.data;
 
-    if (!response.ok) {
-      throw new Error('Gagal mengirim data log sampah');
-    }
+          if (!logs || logs.length === 0) {
+            document.getElementById('logSummary').innerHTML = "<p>Belum ada log sampah tersedia.</p>";
+            return;
+          }
 
-    alert('Log sampah berhasil dikirim!');
-    // Reset atau kembali ke halaman dashboard, misal:
-    window.location.href = 'dashboard.html';
+          let summaryHTML = `<h3>♻️ Riwayat Log Sampah</h3>`;
 
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
-});
+          logs.forEach(log => {
+            summaryHTML += `
+        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+          <p><strong>User:</strong> ${log.user.username} (${log.user.email})</p>
+          <p><strong>Jenis Sampah:</strong> ${log.waste.type}</p>
+          <p><strong>Berat:</strong> ${log.weight} kg</p>
+          <p><strong>Tanggal:</strong> ${new Date(log.date_collected).toLocaleDateString('id-ID')}</p>
+          <p><strong>Eco Points:</strong> ${log.waste.eco_points * log.weight}</p>
+          <p><strong>Lokasi:</strong> ${log.location.name}, ${log.location.city}, ${log.location.province}</p>
+          ${log.image_url ? `<img src="${log.image_url}" alt="Foto Sampah" style="max-width: 100%; margin-top: 10px;" />` : ''}
+        </div>
+      `;
+          });
 
-  // Data to hold current form state
-  const formState = {
-    category: 'Plastik',
-    description: 'Botol plastik bekas minuman',
-    weight: 1.5,
-    disposalMethod: 'bank',
-    schedule: 'Sekarang',
-    location: 'Jl. Sudirman No. 123, Jakarta Pusat',
-    points: 7,
-    totalPoints: 252,
-    logDate: '24 Mei 2025, 14:30 WIB'
-  };
+          document.getElementById('logSummary').innerHTML = summaryHTML;
 
-  // Handle category selection
-  const categoryGrid = document.getElementById('categoryGrid');
-  const infoCategory = document.getElementById('infoCategory');
-  categoryGrid.addEventListener('click', (e) => {
-    const target = e.target.closest('.category-btn');
-    if (!target) return;
-    [...categoryGrid.children].forEach(btn => btn.classList.remove('selected'));
-    target.classList.add('selected');
-    const cat = target.getAttribute('data-category');
-    formState.category = cat;
-    updateCategoryInfo(cat);
-  });
+        } catch (error) {
+          document.getElementById('logSummary').innerHTML = `<p style="color:red;">Gagal memuat log: ${error.message}</p>`;
+        }
+      }
 
-  function updateCategoryInfo(cat) {
-    let infoText = '';
-    switch (cat) {
-      case 'Plastik':
-        infoText = `ℹ️ Info Kategori Plastik:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 2.000-3.000/kg<br>• EcoPoints: 5 points/kg<br>• Tips: Cuci bersih sebelum buang`;
-        formState.points = 7;
-        break;
-      case 'Kertas':
-        infoText = `ℹ️ Info Kategori Kertas:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 1.500-2.500/kg<br>• EcoPoints: 4 points/kg<br>• Tips: Pisahkan kertas bersih dan kotor`;
-        formState.points = 5;
-        break;
-      case 'Logam':
-        infoText = `ℹ️ Info Kategori Logam:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 3.000-4.000/kg<br>• EcoPoints: 6 points/kg<br>• Tips: Bersihkan sebelum dijual`;
-        formState.points = 8;
-        break;
-      case 'Organik':
-        infoText = `ℹ️ Info Kategori Organik:<br>• Daur ulang: ❌ Tidak<br>• Harga jual: Rp 500-1.000/kg<br>• EcoPoints: 2 points/kg<br>• Tips: Komposkan sisa makanan`;
-        formState.points = 3;
-        break;
-      case 'Elektronik':
-        infoText = `ℹ️ Info Kategori Elektronik:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 10.000-20.000/kg<br>• EcoPoints: 10 points/kg<br>• Tips: Bawa ke pusat daur ulang khusus`;
-        formState.points = 12;
-        break;
-      case 'B3':
-        infoText = `ℹ️ Info Kategori B3:<br>• Daur ulang: ❌ Tidak<br>• Harga jual: N/A<br>• EcoPoints: 0 points/kg<br>• Tips: Tangani dengan aman dan benar`;
-        formState.points = 0;
-        break;
-    }
-    infoCategory.innerHTML = infoText;
-    updatePointsDisplay();
-  }
+      const userId = sessionStorage.getItem('userId');
+      if (userId) {
+        fetchWasteLogs(userId);
+      }
 
-  // Weight slider & display
-  const weightInput = document.getElementById('weightInput');
-  const weightDisplay = document.getElementById('weightDisplay');
-  weightInput.addEventListener('input', () => {
-    formState.weight = parseFloat(weightInput.value);
-    weightDisplay.textContent = `${formState.weight.toFixed(1)} kg`;
-    updatePointsDisplay();
-  });
 
-  // Update points display based on weight & category
-  function updatePointsDisplay() {
-    const totalPoints = Math.round(formState.points * formState.weight);
-    document.getElementById('pointsNumber').textContent = `+${totalPoints}`;
-    formState.calculatedPoints = totalPoints;
-  }
+      const submitLogBtn = document.getElementById('submitLog');
 
-  // Upload photo logic (preview)
-  const uploadArea = document.getElementById('uploadArea');
-  const photoInput = document.getElementById('photoInput');
-  const previewImage = document.getElementById('previewImage');
+      submitLogBtn.addEventListener('click', async () => {
+        // Pastikan ada user_id, sesuaikan cara ambil user_id sesuai autentikasi anda
+        const userId = sessionStorage.getItem('userId'); // Contoh, sesuaikan
 
-  uploadArea.addEventListener('click', () => photoInput.click());
-  photoInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      previewImage.style.backgroundImage = `url(${reader.result})`;
-      previewImage.textContent = '';
-    };
-    reader.readAsDataURL(file);
-  });
+        if (!userId) {
+          alert('Anda harus login terlebih dahulu.');
+          window.location.href = 'index.html';
+          return;
+        }
 
-  // Tab disposal method logic
-  const disposalTabs = document.getElementById('disposalTabs');
-  const disposalInfo = document.getElementById('disposalInfo');
+        // Siapkan data sesuai struktur tabel database
+        const payload = {
+          user_id: userId,
+          waste_type: formState.category,
+          weight: formState.weight,
+          location: formState.location,
+          date: new Date().toISOString(), // tanggal log saat ini, bisa disesuaikan
+          points_earned: formState.calculatedPoints || formState.points,
+        };
 
-  disposalTabs.addEventListener('click', (e) => {
-    const target = e.target.closest('.tab');
-    if (!target) return;
-    [...disposalTabs.children].forEach(tab => tab.classList.remove('active'));
-    target.classList.add('active');
-    const method = target.getAttribute('data-method');
-    formState.disposalMethod = method;
-    updateDisposalInfo(method);
-  });
+        try {
+          const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, { // sesuaikan endpoint API backend
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('token'), // jika perlu auth token
+            },
+            body: JSON.stringify(payload),
+          });
 
-  function updateDisposalInfo(method) {
-    let text = '';
-    switch (method) {
-      case 'rumah':
-        text = `<strong>🏠 Pembuangan di Rumah</strong><br>• Sampah akan dikategorikan dalam tempat sampah rumah<br>• Menunggu jadwal pengambilan sampah<br>• EcoPoints: Normal (${formState.points} points)`;
-        break;
-      case 'tps':
-        text = `<strong>🗑️ TPS Terdekat</strong><br>• Buang langsung ke TPS terdekat<br>• EcoPoints: Bonus +2 points`;
-        break;
-      case 'bank':
-        text = `<strong>🏦 Bank Sampah</strong><br>• Bawa ke bank sampah resmi<br>• EcoPoints: Bonus +5 points`;
-        break;
-    }
-    disposalInfo.innerHTML = text;
-  }
+          if (!response.ok) {
+            throw new Error('Gagal mengirim data log sampah');
+          }
 
-  // Schedule select
-  const scheduleSelect = document.getElementById('scheduleSelect');
-  scheduleSelect.addEventListener('change', () => {
-    formState.schedule = scheduleSelect.value;
-  });
+          alert('Log sampah berhasil dikirim!');
+          // Reset atau kembali ke halaman dashboard, misal:
+          window.location.href = 'dashboard.html';
 
-  // Location refresh (dummy)
-  const currentLocation = document.getElementById('currentLocation');
-  const refreshLocationBtn = document.getElementById('refreshLocation');
-  refreshLocationBtn.addEventListener('click', () => {
-    currentLocation.innerHTML = `🌍 Menggunakan GPS...<br /><strong>Jl. Sudirman No. 123, Jakarta Pusat</strong><br /><small>Akurasi: ±5 meter</small>`;
-    alert('Lokasi berhasil diperbarui!');
-  });
-
-  // Navigation between steps
-  const toStep2Btn = document.getElementById('toStep2');
-  const toStep3Btn = document.getElementById('toStep3');
-  const toStep4Btn = document.getElementById('toStep4');
-  const backToStep1Btn = document.getElementById('backToStep1');
-  const backToStep2Btn = document.getElementById('backToStep2');
-  const backHomeBtn = document.getElementById('backHomeBtn');
-  const logAnotherBtn = document.getElementById('logAnotherBtn');
-  const shareAchievementBtn = document.getElementById('shareAchievementBtn');
-
-  const screens = document.querySelectorAll('.screen');
-
-  function showStep(step) {
-    screens.forEach(screen => {
-      screen.classList.toggle('active', screen.getAttribute('data-step') == step);
-    });
-    updateStepIndicators(step);
-    if (step == '4') {
-      updateSummary();
-    }
-  }
-
-  function updateStepIndicators(step) {
-    screens.forEach(screen => {
-      const steps = screen.querySelectorAll('.step');
-      steps.forEach((st, i) => {
-        if(i + 1 < step) {
-          st.classList.add('completed');
-          st.classList.remove('active');
-        } else if(i + 1 == step) {
-          st.classList.add('active');
-          st.classList.remove('completed');
-        } else {
-          st.classList.remove('active', 'completed');
+        } catch (error) {
+          alert('Error: ' + error.message);
         }
       });
-    });
-  }
 
-  // Summary update for step 4
-  function updateSummary() {
-    const summary = `
+      // Data to hold current form state
+      const formState = {
+        category: 'Plastik',
+        description: 'Botol plastik bekas minuman',
+        weight: 1.5,
+        disposalMethod: 'bank',
+        schedule: 'Sekarang',
+        location: 'Jl. Sudirman No. 123, Jakarta Pusat',
+        points: 7,
+        totalPoints: 252,
+        logDate: '24 Mei 2025, 14:30 WIB'
+      };
+
+      // Handle category selection
+      const categoryGrid = document.getElementById('categoryGrid');
+      const infoCategory = document.getElementById('infoCategory');
+      categoryGrid.addEventListener('click', (e) => {
+        const target = e.target.closest('.category-btn');
+        if (!target) return;
+        [...categoryGrid.children].forEach(btn => btn.classList.remove('selected'));
+        target.classList.add('selected');
+        const cat = target.getAttribute('data-category');
+        formState.category = cat;
+        updateCategoryInfo(cat);
+      });
+
+      function updateCategoryInfo(cat) {
+        let infoText = '';
+        switch (cat) {
+          case 'Plastik':
+            infoText = `ℹ️ Info Kategori Plastik:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 2.000-3.000/kg<br>• EcoPoints: 5 points/kg<br>• Tips: Cuci bersih sebelum buang`;
+            formState.points = 7;
+            break;
+          case 'Kertas':
+            infoText = `ℹ️ Info Kategori Kertas:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 1.500-2.500/kg<br>• EcoPoints: 4 points/kg<br>• Tips: Pisahkan kertas bersih dan kotor`;
+            formState.points = 5;
+            break;
+          case 'Logam':
+            infoText = `ℹ️ Info Kategori Logam:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 3.000-4.000/kg<br>• EcoPoints: 6 points/kg<br>• Tips: Bersihkan sebelum dijual`;
+            formState.points = 8;
+            break;
+          case 'Organik':
+            infoText = `ℹ️ Info Kategori Organik:<br>• Daur ulang: ❌ Tidak<br>• Harga jual: Rp 500-1.000/kg<br>• EcoPoints: 2 points/kg<br>• Tips: Komposkan sisa makanan`;
+            formState.points = 3;
+            break;
+          case 'Elektronik':
+            infoText = `ℹ️ Info Kategori Elektronik:<br>• Daur ulang: ✅ Ya<br>• Harga jual: Rp 10.000-20.000/kg<br>• EcoPoints: 10 points/kg<br>• Tips: Bawa ke pusat daur ulang khusus`;
+            formState.points = 12;
+            break;
+          case 'B3':
+            infoText = `ℹ️ Info Kategori B3:<br>• Daur ulang: ❌ Tidak<br>• Harga jual: N/A<br>• EcoPoints: 0 points/kg<br>• Tips: Tangani dengan aman dan benar`;
+            formState.points = 0;
+            break;
+        }
+        infoCategory.innerHTML = infoText;
+        updatePointsDisplay();
+      }
+
+      // Weight slider & display
+      const weightInput = document.getElementById('weightInput');
+      const weightDisplay = document.getElementById('weightDisplay');
+      weightInput.addEventListener('input', () => {
+        formState.weight = parseFloat(weightInput.value);
+        weightDisplay.textContent = `${formState.weight.toFixed(1)} kg`;
+        updatePointsDisplay();
+      });
+
+      // Update points display based on weight & category
+      function updatePointsDisplay() {
+        const totalPoints = Math.round(formState.points * formState.weight);
+        document.getElementById('pointsNumber').textContent = `+${totalPoints}`;
+        formState.calculatedPoints = totalPoints;
+      }
+
+      // Upload photo logic (preview)
+      const uploadArea = document.getElementById('uploadArea');
+      const photoInput = document.getElementById('photoInput');
+      const previewImage = document.getElementById('previewImage');
+
+      uploadArea.addEventListener('click', () => photoInput.click());
+      photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          previewImage.style.backgroundImage = `url(${reader.result})`;
+          previewImage.textContent = '';
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Tab disposal method logic
+      const disposalTabs = document.getElementById('disposalTabs');
+      const disposalInfo = document.getElementById('disposalInfo');
+
+      disposalTabs.addEventListener('click', (e) => {
+        const target = e.target.closest('.tab');
+        if (!target) return;
+        [...disposalTabs.children].forEach(tab => tab.classList.remove('active'));
+        target.classList.add('active');
+        const method = target.getAttribute('data-method');
+        formState.disposalMethod = method;
+        updateDisposalInfo(method);
+      });
+
+      function updateDisposalInfo(method) {
+        let text = '';
+        switch (method) {
+          case 'rumah':
+            text = `<strong>🏠 Pembuangan di Rumah</strong><br>• Sampah akan dikategorikan dalam tempat sampah rumah<br>• Menunggu jadwal pengambilan sampah<br>• EcoPoints: Normal (${formState.points} points)`;
+            break;
+          case 'tps':
+            text = `<strong>🗑️ TPS Terdekat</strong><br>• Buang langsung ke TPS terdekat<br>• EcoPoints: Bonus +2 points`;
+            break;
+          case 'bank':
+            text = `<strong>🏦 Bank Sampah</strong><br>• Bawa ke bank sampah resmi<br>• EcoPoints: Bonus +5 points`;
+            break;
+        }
+        disposalInfo.innerHTML = text;
+      }
+
+      // Schedule select
+      const scheduleSelect = document.getElementById('scheduleSelect');
+      scheduleSelect.addEventListener('change', () => {
+        formState.schedule = scheduleSelect.value;
+      });
+
+      // Location refresh (dummy)
+      const currentLocation = document.getElementById('currentLocation');
+      const refreshLocationBtn = document.getElementById('refreshLocation');
+      refreshLocationBtn.addEventListener('click', () => {
+        currentLocation.innerHTML = `🌍 Menggunakan GPS...<br /><strong>Jl. Sudirman No. 123, Jakarta Pusat</strong><br /><small>Akurasi: ±5 meter</small>`;
+        alert('Lokasi berhasil diperbarui!');
+      });
+
+      // Navigation between steps
+      const toStep2Btn = document.getElementById('toStep2');
+      const toStep3Btn = document.getElementById('toStep3');
+      const toStep4Btn = document.getElementById('toStep4');
+      const backToStep1Btn = document.getElementById('backToStep1');
+      const backToStep2Btn = document.getElementById('backToStep2');
+      const backHomeBtn = document.getElementById('backHomeBtn');
+      const logAnotherBtn = document.getElementById('logAnotherBtn');
+      const shareAchievementBtn = document.getElementById('shareAchievementBtn');
+
+      const screens = document.querySelectorAll('.screen');
+
+      function showStep(step) {
+        screens.forEach(screen => {
+          screen.classList.toggle('active', screen.getAttribute('data-step') == step);
+        });
+        updateStepIndicators(step);
+        if (step == '4') {
+          updateSummary();
+        }
+      }
+
+      function updateStepIndicators(step) {
+        screens.forEach(screen => {
+          const steps = screen.querySelectorAll('.step');
+          steps.forEach((st, i) => {
+            if (i + 1 < step) {
+              st.classList.add('completed');
+              st.classList.remove('active');
+            } else if (i + 1 == step) {
+              st.classList.add('active');
+              st.classList.remove('completed');
+            } else {
+              st.classList.remove('active', 'completed');
+            }
+          });
+        });
+      }
+
+      // Summary update for step 4
+      function updateSummary() {
+        const summary = `
       <strong>📋 Ringkasan Log Sampah:</strong><br />
       • Kategori: ${getCategoryEmoji(formState.category)} ${formState.category}<br />
       • Deskripsi: ${formState.description}<br />
@@ -820,56 +914,57 @@ submitLogBtn.addEventListener('click', async () => {
       • Waktu: ${formState.logDate}<br />
       • Metode: ${getDisposalEmoji(formState.disposalMethod)} ${getDisposalName(formState.disposalMethod)}
     `;
-    document.getElementById('summaryLog').innerHTML = summary;
-    document.getElementById('finalPoints').textContent = `+${formState.calculatedPoints || formState.points}`;
-  }
+        document.getElementById('summaryLog').innerHTML = summary;
+        document.getElementById('finalPoints').textContent = `+${formState.calculatedPoints || formState.points}`;
+      }
 
-  function getCategoryEmoji(cat) {
-    switch(cat) {
-      case 'Plastik': return '🥤';
-      case 'Kertas': return '📄';
-      case 'Logam': return '🥫';
-      case 'Organik': return '🍌';
-      case 'Elektronik': return '🔋';
-      case 'B3': return '🧪';
-      default: return '';
-    }
-  }
-  function getDisposalEmoji(method) {
-    switch(method) {
-      case 'rumah': return '🏠';
-      case 'tps': return '🗑️';
-      case 'bank': return '🏦';
-      default: return '';
-    }
-  }
-  function getDisposalName(method) {
-    switch(method) {
-      case 'rumah': return 'Di Rumah';
-      case 'tps': return 'TPS Terdekat';
-      case 'bank': return 'Bank Sampah';
-      default: return '';
-    }
-  }
+      function getCategoryEmoji(cat) {
+        switch (cat) {
+          case 'Plastik': return '🥤';
+          case 'Kertas': return '📄';
+          case 'Logam': return '🥫';
+          case 'Organik': return '🍌';
+          case 'Elektronik': return '🔋';
+          case 'B3': return '🧪';
+          default: return '';
+        }
+      }
+      function getDisposalEmoji(method) {
+        switch (method) {
+          case 'rumah': return '🏠';
+          case 'tps': return '🗑️';
+          case 'bank': return '🏦';
+          default: return '';
+        }
+      }
+      function getDisposalName(method) {
+        switch (method) {
+          case 'rumah': return 'Di Rumah';
+          case 'tps': return 'TPS Terdekat';
+          case 'bank': return 'Bank Sampah';
+          default: return '';
+        }
+      }
 
-  toStep2Btn.addEventListener('click', () => showStep('2'));
-  toStep3Btn.addEventListener('click', () => showStep('3'));
-  toStep4Btn.addEventListener('click', () => showStep('4'));
+      toStep2Btn.addEventListener('click', () => showStep('2'));
+      toStep3Btn.addEventListener('click', () => showStep('3'));
+      toStep4Btn.addEventListener('click', () => showStep('4'));
 
-  backToStep1Btn.addEventListener('click', () => showStep('1'));
-  backToStep2Btn.addEventListener('click', () => showStep('2'));
+      backToStep1Btn.addEventListener('click', () => showStep('1'));
+      backToStep2Btn.addEventListener('click', () => showStep('2'));
 
-  backHomeBtn.addEventListener('click', () => {
-  window.location.href = 'dashboard.html';
-});
+      backHomeBtn.addEventListener('click', () => {
+        window.location.href = 'dashboard.html';
+      });
 
-  logAnotherBtn.addEventListener('click', () => showStep('1'));
-  shareAchievementBtn.addEventListener('click', () => alert('Fitur share belum tersedia'));
+      logAnotherBtn.addEventListener('click', () => showStep('1'));
+      shareAchievementBtn.addEventListener('click', () => alert('Fitur share belum tersedia'));
 
-  // Initialize default info text
-  updateCategoryInfo(formState.category);
-  updateDisposalInfo(formState.disposalMethod);
-  updatePointsDisplay();
-</script>
+      // Initialize default info text
+      updateCategoryInfo(formState.category);
+      updateDisposalInfo(formState.disposalMethod);
+      updatePointsDisplay();
+    </script>
 </body>
+
 </html>

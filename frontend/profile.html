@@ -43,8 +43,13 @@
 
   <script src="assets/js/loadNavbar.js"></script>
 
-  <script>
-    const token = localStorage.getItem("token");
+  <script type="module" src="config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { BASE_URL } from "./config.js";
+    import { refreshAccessTokenIfNeeded } from "./auth.js";
+
+    const token = sessionStorage.getItem("accessToken");
     if (!token) {
       alert("Silakan login terlebih dahulu!");
       window.location.href = "index.html";
@@ -52,20 +57,21 @@
 
     async function fetchProfile() {
       try {
-        const res = await fetch("http://localhost:3000/api/user/profile", {
+        const res = await fetch(`${BASE_URL}/user/profile`, {
           headers: { Authorization: "Bearer " + token },
         });
         if (!res.ok) throw new Error("Gagal mengambil data profil");
-        const data = await res.json();
+        // const data = await res.json();
+        const user = await res.json();
+        const data = user.user;
 
-        // Contoh struktur data: { name, email, location, level, badges: [] }
         const nameEmailLoc = document.getElementById(
           "profileNameEmailLocation"
         );
         nameEmailLoc.innerHTML = ` 
-            <strong>${data.name || "Nama Tidak Tersedia"}</strong><br>
+            <strong>${data.username || "Nama Tidak Tersedia"}</strong><br>
             <small>${data.email || "Email Tidak Tersedia"}</small><br>
-            <small>📍 ${data.location || "Lokasi Tidak Tersedia"}</small>
+            <small>📍 ${data.eco_points || "Eco points Tidak Tersedia"}</small>
           `;
 
         const levelBadge = document.getElementById("profileLevelBadge");
