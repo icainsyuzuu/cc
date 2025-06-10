@@ -12,6 +12,6 @@ feedbackRouter.post('/feedback/user/:user_id', createFeedback);
 // PUT /api/feedback/:id - Update feedback record berdasarkan ID
 feedbackRouter.put('feedback/:id', updateFeedbackById);
 // DELETE /api/feedback/:id - Hapus feedback record berdasarkan ID
-feedbackRouter.delete('/:id', deleteFeedbackById);
+feedbackRouter.delete('/feedback/:id', deleteFeedbackById);
 
 export { feedbackRouter };
