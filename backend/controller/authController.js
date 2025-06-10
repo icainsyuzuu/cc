@@ -101,7 +101,7 @@ async function loginUser(req, res) {
             httpOnly: true,
             sameSite: 'none',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-            secure: true // Set to true if using HTTPS
+            secure: false // Set to true if using HTTPS
         });
 
         res.status(200).json({
