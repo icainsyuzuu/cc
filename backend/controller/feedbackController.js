@@ -1,4 +1,4 @@
-import { Feedback } from "../models/feedback.js";
+import { Feedback } from "../model/feedback.js";
 import { User } from "../model/user.js"; // Import model User jika dibutuhkan
 
 // Fungsi untuk mendapatkan feedback berdasarkan user_id
