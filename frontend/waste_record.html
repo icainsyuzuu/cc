@@ -698,23 +698,30 @@
 
         // Siapkan data sesuai struktur tabel database
         const payload = {
-          user_id: userId,
-          waste_type: formState.category,
+          waste_id: formState.waste_id,
+          location_id: formState.location_id,
           weight: formState.weight,
-          location: formState.location,
-          date: new Date().toISOString(), // tanggal log saat ini, bisa disesuaikan
-          points_earned: formState.calculatedPoints || formState.points,
+          date_collected: new Date().toISOString(), // sesuai kebutuhan backend
         };
+        // const payload = {
+        //   user_id: userId,
+        //   waste_type: formState.category,
+        //   weight: formState.weight,
+        //   location: formState.location,
+        //   date: new Date().toISOString(), // tanggal log saat ini, bisa disesuaikan
+        //   points_earned: formState.calculatedPoints || formState.points,
+        // };
 
         try {
-          const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, { // sesuaikan endpoint API backend
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + localStorage.getItem('token'), // jika perlu auth token
-            },
-            body: JSON.stringify(payload),
-          });
+          
+          // const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, { // sesuaikan endpoint API backend
+          //   method: 'POST',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //     Authorization: 'Bearer ' + localStorage.getItem('token'), // jika perlu auth token
+          //   },
+          //   body: JSON.stringify(payload),
+          // });
 
           if (!response.ok) {
             throw new Error('Gagal mengirim data log sampah');

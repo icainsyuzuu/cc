@@ -1,3 +1,4 @@
+import { Feedback } from "../model/feedback.js";
 import { Location } from "../model/location.js";
 import { User } from "../model/user.js";
 import { Waste } from "../model/waste.js";
@@ -15,6 +16,16 @@ const associateModels = () => {
             onUpdate: 'CASCADE' // Optional: update waste records when user is updated
         });
         WasteRecord.belongsTo(User, {
+            foreignKey: 'user_id',
+            as: 'user'
+        });
+        User.hasMany(Feedback, {
+            foreignKey: 'user_id',
+            as: 'feedbacks',
+            onDelete: 'CASCADE', // Optional: delete waste records when user is deleted
+            onUpdate: 'CASCADE' // Optional: update waste records when user is updated
+        });
+        Feedback.belongsTo(User, {
             foreignKey: 'user_id',
             as: 'user'
         });

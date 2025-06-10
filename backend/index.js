@@ -8,6 +8,7 @@ import { locRouter } from './route/locationRoute.js';
 import { WasteRecordRouter } from './route/wasteRecordRoute.js';
 import { wasteRouter } from './route/wasteRoute.js';
 import cookieParser from 'cookie-parser';
+import { feedbackRouter } from './route/feedbackRoute.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,6 +39,8 @@ app.use('/api/user', userRouter);
 app.use('/api', locRouter);
 app.use('/api/waste', wasteRouter);
 app.use('/api/waste-record', WasteRecordRouter);
+app.use('/api/feedback', feedbackRouter);
+
 
 
 app.listen(PORT, () => {
