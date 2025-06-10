@@ -97,9 +97,25 @@ async function updateProfile(req, res) {
   }
 }
 
+async function deleteProfile(req, res) {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User tidak ditemukan" });
+
+    await user.destroy();
+    res.json({ success: true, message: "Akun berhasil dihapus" });
+  } catch (err) {
+    console.error("Delete profile error:", err);
+    res.status(500).json({ success: false, message: "Terjadi kesalahan server" });
+  }
+}
+
+
 
 export {
     getDashboard,
     getProfile,
-    updateProfile
+    updateProfile,
+    deleteProfile
 }

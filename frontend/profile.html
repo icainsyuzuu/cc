@@ -32,6 +32,10 @@
       </button>
       <button class="mockup-button" id="btnSettings">⚙️ Pengaturan</button>
       <button class="mockup-button" id="btnHistory">Riwayat Penyetoran</button>
+      <div class="mockup-item">
+        <strong>Hapus Akun</strong><br />
+        <button class="mockup-button danger" id="deleteAccountBtn">🗑️ Hapus Akun</button>
+      </div>
 
 
       <!-- Tombol Logout -->
@@ -110,6 +114,28 @@
     document.getElementById("btnHistory").addEventListener("click", () => {
       window.location.href = 'waste_history.html';
     });
+
+    //delete account
+    document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+      const confirmed = confirm("Apakah Anda yakin ingin menghapus akun ini secara permanen?");
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`${BASE_URL}/user/profile`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        if (!res.ok) throw new Error("Gagal menghapus akun");
+
+        alert("Akun berhasil dihapus.");
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("Gagal menghapus akun: " + err.message);
+      }
+    });
+
 
     // Fungsi Logout
     document.getElementById("logoutBtn").addEventListener("click", () => {
