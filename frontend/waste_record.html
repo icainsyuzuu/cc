@@ -678,14 +678,14 @@
         }
       }
 
+      const token = sessionStorage.getItem('accessToken');
       const userId = sessionStorage.getItem('userId');
       if (userId) {
         fetchWasteLogs(userId);
       }
 
-
+      //create
       const submitLogBtn = document.getElementById('submitLog');
-
       submitLogBtn.addEventListener('click', async () => {
         // Pastikan ada user_id, sesuaikan cara ambil user_id sesuai autentikasi anda
         const userId = sessionStorage.getItem('userId'); // Contoh, sesuaikan
@@ -696,13 +696,28 @@
           return;
         }
 
+        const photoFile = photoInput.files[0];
+        if (!photoFile) {
+          alert("Silakan unggah foto terlebih dahulu.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("weight", formState.weight);
+        formData.append("date_collected", new Date().toISOString());
+
+        // Anda perlu mapping dari kategori → waste_id dan lokasi → location_id
+        formData.append("waste_id", getWasteIdByCategory(formState.category));
+        formData.append("location_id", getLocationIdByName(formState.location));
+        formData.append("image", photoInput.files[0]);
+
         // Siapkan data sesuai struktur tabel database
-        const payload = {
-          waste_id: formState.waste_id,
-          location_id: formState.location_id,
-          weight: formState.weight,
-          date_collected: new Date().toISOString(), // sesuai kebutuhan backend
-        };
+        // const payload = {
+        //   waste_id: formState.waste_id,
+        //   location_id: formState.location_id,
+        //   weight: formState.weight,
+        //   date_collected: new Date().toISOString(), // sesuai kebutuhan backend
+        // };
         // const payload = {
         //   user_id: userId,
         //   waste_type: formState.category,
@@ -713,7 +728,13 @@
         // };
 
         try {
-          
+          const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, {
+            method: 'POST',
+            headers: {
+              Authorization: 'Bearer ' + token,
+            },
+            body: formData,
+          });
           // const response = await fetch(`${BASE_URL}/waste-record/user/${userId}`, { // sesuaikan endpoint API backend
           //   method: 'POST',
           //   headers: {
@@ -737,17 +758,17 @@
       });
 
       // Data to hold current form state
-      const formState = {
-        category: 'Plastik',
-        description: 'Botol plastik bekas minuman',
-        weight: 1.5,
-        disposalMethod: 'bank',
-        schedule: 'Sekarang',
-        location: 'Jl. Sudirman No. 123, Jakarta Pusat',
-        points: 7,
-        totalPoints: 252,
-        logDate: '24 Mei 2025, 14:30 WIB'
-      };
+      // const formState = {
+      //   category: 'Plastik',
+      //   description: 'Botol plastik bekas minuman',
+      //   weight: 1.5,
+      //   disposalMethod: 'bank',
+      //   schedule: 'Sekarang',
+      //   location: 'Jl. Sudirman No. 123, Jakarta Pusat',
+      //   points: 7,
+      //   totalPoints: 252,
+      //   logDate: '24 Mei 2025, 14:30 WIB'
+      // };
 
       // Handle category selection
       const categoryGrid = document.getElementById('categoryGrid');

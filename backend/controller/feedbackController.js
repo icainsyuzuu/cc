@@ -1,5 +1,5 @@
 import { Feedback } from "../models/feedback.js";
-import { User } from "../models/user.js"; // Import model User jika dibutuhkan
+import { User } from "../model/user.js"; // Import model User jika dibutuhkan
 
 // Fungsi untuk mendapatkan feedback berdasarkan user_id
 const getFeedbackByUserId = async (req, res) => {
@@ -39,7 +39,7 @@ const createFeedback = async (req, res) => {
             return res.status(404).json({ status: "failed", message: "User tidak ditemukan" });
         }
 
-        
+
         const newFeedback = await Feedback.create({
             user_id,
             message,
