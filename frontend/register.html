@@ -134,7 +134,7 @@
 
         const data = await res.json();
 
-        if (res.ok && data.success) {
+        if (res.ok) {
           alert('Pendaftaran berhasil! Silakan login.');
           window.location.href = 'index.html';
         } else {
