@@ -21,7 +21,7 @@ userRouter.put('/profile', authMiddleware, updateProfile);
 userRouter.delete('/profile', authMiddleware, deleteProfile);
 
 // photo profile
-userRouter.post('/profile/:user_id', authMiddleware, uploadImage, uploadPhotoProfile);
+// userRouter.post('/profile/:user_id', authMiddleware, uploadImage, uploadPhotoProfile);
 
 // export default userRouter;
 export { userRouter };
