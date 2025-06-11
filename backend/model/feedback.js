@@ -19,6 +19,10 @@ const Feedback = db.define("feedbacks", {
         type: Sequelize.INTEGER,
         allowNull: false,
     },
+}, {
+    timestamps: true, // This will add createdAt and updatedAt
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 });
 
 export { Feedback };
