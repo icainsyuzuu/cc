@@ -19,12 +19,9 @@
       <div class="mockup-item" id="profileNameEmailLocation">
         <strong>Loading...</strong>
       </div>
-
-      <button class="mockup-button" id="btnChangePhoto">
-        📸 Ganti Foto Profil
-      </button>
       <button class="mockup-button" id="btnSettings">⚙️ Pengaturan</button>
       <button class="mockup-button" id="btnHistory">Riwayat Penyetoran</button>
+      <br>
       <div class="mockup-item">
         <strong>Hapus Akun</strong><br />
         <button class="mockup-button danger" id="deleteAccountBtn">🗑️ Hapus Akun</button>
@@ -80,13 +77,7 @@
 
     fetchProfile();
 
-    // Contoh tombol aksi
-    document
-      .getElementById("btnChangePhoto")
-      .addEventListener("click", () => {
-        window.location.href = "edit_photo.html";
-      });
-
+    // tombol aksi
     document.getElementById("btnSettings").addEventListener("click", () => {
       window.location.href = "edit_profile.html";
     });
