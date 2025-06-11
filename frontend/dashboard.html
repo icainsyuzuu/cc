@@ -26,7 +26,7 @@
     </div>
 
     <div class="buttons-row">
-      <button class="mockup-button" id="findTPS">📍 Cari TPS Terdekat</button>
+      <button class="mockup-button" id="findTPS">📍 Cari Bank Sampah Terdekat</button>
       <button class="mockup-button secondary" id="logWaste">
         ♻️ Log Sampah Baru
       </button>
@@ -159,19 +159,19 @@
               );
 
               if (!response.ok)
-                throw new Error("Gagal mendapatkan lokasi TPS terdekat");
+                throw new Error("Gagal mendapatkan lokasi Bank Sampah terdekat");
 
               const data = await response.json();
 
               if (data.success && data.data && data.data.length > 0) {
-                let message = "TPS Terdekat:\n";
+                let message = "Bank Sampah Terdekat:\n";
                 data.data.forEach((loc, i) => {
                   message += `${i + 1}. ${loc.name
                     } - Jarak: ${loc.distance.toFixed(2)} km\n`;
                 });
                 alert(message);
               } else {
-                alert("Tidak ditemukan TPS dalam radius 5 km.");
+                alert("Tidak ditemukan Bank Sampah dalam radius 5 km.");
               }
             } catch (err) {
               alert(err.message);
