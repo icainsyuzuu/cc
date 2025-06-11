@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Waste Record - EcoWaste</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+<<<<<<< HEAD
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -35,32 +37,385 @@
 
         button {
             background-color: #4CAF50;
+=======
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 30px;
+            text-align: center;
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
             color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #4CAF50;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="number"],
+        input[type="date"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
             cursor: pointer;
         }
 
+<<<<<<< HEAD
         button:hover {
             background-color: #3e8e41;
         }
 
-        .image-preview {
-            max-width: 200px;
-            margin-top: 10px;
+=======
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #4CAF50;
+            border-radius: 12px;
+            background: #f8fffe;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
         }
 
+        .file-input-label:hover {
+            background: #f0fdf4;
+            border-color: #45a049;
+        }
+
+        .file-input-label i {
+            font-size: 2rem;
+            color: #4CAF50;
+            margin-right: 12px;
+        }
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
+        .image-preview {
+            max-width: 200px;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+<<<<<<< HEAD
+=======
+        .image-preview:hover {
+            transform: scale(1.05);
+        }
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
         .error-message {
-            color: red;
-            margin-top: -10px;
-            margin-bottom: 10px;
-            font-size: 0.8em;
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message i {
+            margin-right: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            color: #495057;
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .form-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            margin: -25px 0 0 -25px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 
 <body>
+<<<<<<< HEAD
     <div id="navbar-container"></div>
 
     <div class="container">
@@ -94,6 +449,112 @@
         <br><a href="index.html">← Kembali ke Home</a>
     </div>
 
+=======
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+
+    <div id="navbar-container"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="pageTitle"><i class="fas fa-recycle"></i> Waste Record</h1>
+            <p>Kelola data sampah Anda dengan mudah dan efisien</p>
+        </div>
+
+        <div class="form-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="form-steps">
+                <div class="step active">1</div>
+                <div class="step">2</div>
+                <div class="step">3</div>
+                <div class="step">4</div>
+            </div>
+
+            <form id="wasteRecordForm">
+                <div class="form-group">
+                    <label for="locationId">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Lokasi Pengumpulan
+                    </label>
+                    <div class="input-wrapper">
+                        <select id="locationId" required>
+                            <option value="" disabled selected>Pilih Lokasi Pengumpulan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wasteId">
+                        <i class="fas fa-trash-alt"></i>
+                        Jenis Sampah
+                    </label>
+                    <div class="input-wrapper">
+                        <select id="wasteId" required>
+                            <option value="" disabled selected>Pilih Jenis Sampah</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">
+                        <i class="fas fa-weight-hanging"></i>
+                        Berat Sampah (kg)
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="number" id="weight" required min="0.1" step="0.01" placeholder="Masukkan berat dalam kg" />
+                    </div>
+                    <div id="weightError" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateCollected">
+                        <i class="fas fa-calendar-alt"></i>
+                        Tanggal Pengumpulan
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="date" id="dateCollected" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">
+                        <i class="fas fa-camera"></i>
+                        Foto Sampah (Opsional)
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="image" accept="image/*" />
+                        <div class="file-input-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div>
+                                <div style="font-weight: 600;">Klik untuk upload foto</div>
+                                <div style="font-size: 0.875rem; color: #666;">atau drag & drop file disini</div>
+                            </div>
+                        </div>
+                    </div>
+                    <img id="imagePreview" src="#" alt="Image Preview" class="image-preview" style="display:none;" />
+                </div>
+
+                <div class="button-group">
+                    <a href="index.html" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" class="btn btn-primary" id="saveButton">
+                        <i class="fas fa-save"></i>
+                        Simpan Data
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
     <script type="module" src="config.js"></script>
     <script type="module" src="auth.js"></script>
     <script type="module">
@@ -108,6 +569,54 @@
             window.location.href = "index.html";
         }
 
+<<<<<<< HEAD
+=======
+        // Progress tracking
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const steps = document.querySelectorAll('.step');
+            
+            const progressPercentage = (currentStep / totalSteps) * 100;
+            progressFill.style.width = progressPercentage + '%';
+            
+            steps.forEach((step, index) => {
+                if (index < currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        // Form validation with progress tracking
+        function validateForm() {
+            const locationId = document.getElementById("locationId").value;
+            const wasteId = document.getElementById("wasteId").value;
+            const weight = document.getElementById("weight").value;
+            const dateCollected = document.getElementById("dateCollected").value;
+
+            let step = 1;
+            if (locationId) step = 2;
+            if (locationId && wasteId) step = 3;
+            if (locationId && wasteId && weight && parseFloat(weight) > 0) step = 4;
+            if (locationId && wasteId && weight && parseFloat(weight) > 0 && dateCollected) step = 4;
+
+            if (step !== currentStep) {
+                currentStep = step;
+                updateProgress();
+            }
+        }
+
+        // Add event listeners for progress tracking
+        document.getElementById("locationId").addEventListener('change', validateForm);
+        document.getElementById("wasteId").addEventListener('change', validateForm);
+        document.getElementById("weight").addEventListener('input', validateForm);
+        document.getElementById("dateCollected").addEventListener('change', validateForm);
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
         // Function to get waste record ID from URL parameters
         function getWasteRecordId() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -115,7 +624,11 @@
         }
 
         const wasteRecordId = getWasteRecordId();
+<<<<<<< HEAD
         const isUpdateMode = !!wasteRecordId; // Check if wasteRecordId exists
+=======
+        const isUpdateMode = !!wasteRecordId;
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
 
         // Function to fetch waste types and populate the dropdown
         async function loadWasteTypes() {
@@ -173,22 +686,85 @@
             }
         }
 
+<<<<<<< HEAD
         // Function to handle image preview
         document.getElementById('image').addEventListener('change', function (event) {
+=======
+        // Enhanced image preview with drag & drop
+        const imageInput = document.getElementById('image');
+        const fileLabel = document.querySelector('.file-input-label');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileLabel.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileLabel.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileLabel.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            fileLabel.style.background = '#e8f5e8';
+            fileLabel.style.borderColor = '#4CAF50';
+        }
+
+        function unhighlight(e) {
+            fileLabel.style.background = '#f8fffe';
+            fileLabel.style.borderColor = '#4CAF50';
+        }
+
+        fileLabel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            imageInput.files = files;
+            handleImagePreview({ target: { files: files } });
+        }
+
+        function handleImagePreview(event) {
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('imagePreview').src = e.target.result;
                     document.getElementById('imagePreview').style.display = 'block';
+                    fileLabel.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                        <div>
+                            <div style="font-weight: 600;">${file.name}</div>
+                            <div style="font-size: 0.875rem; color: #666;">File berhasil dipilih</div>
+                        </div>
+                    `;
                 }
                 reader.readAsDataURL(file);
             } else {
                 document.getElementById('imagePreview').src = "#";
                 document.getElementById('imagePreview').style.display = 'none';
+                fileLabel.innerHTML = `
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <div>
+                        <div style="font-weight: 600;">Klik untuk upload foto</div>
+                        <div style="font-size: 0.875rem; color: #666;">atau drag & drop file disini</div>
+                    </div>
+                `;
             }
-        });
+        }
 
+<<<<<<< HEAD
+=======
+        imageInput.addEventListener('change', handleImagePreview);
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
         // Function to validate weight
         function validateWeight() {
             const weightInput = document.getElementById("weight");
@@ -196,7 +772,7 @@
             const weightError = document.getElementById("weightError");
 
             if (weight <= 0) {
-                weightError.textContent = "Berat harus lebih dari 0.";
+                weightError.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Berat harus lebih dari 0 kg';
                 return false;
             } else {
                 weightError.textContent = "";
@@ -207,7 +783,7 @@
         // Function to load waste record data for update
         async function loadWasteRecordData() {
             try {
-                const res = await fetch(`${BASE_URL}/waste-record/${wasteRecordId}`, {
+                const res = await fetch(`${BASE_URL}/waste-record/user/${wasteRecordId}`, {
                     headers: {
                         Authorization: "Bearer " + token,
                     },
@@ -215,11 +791,11 @@
                 if (!res.ok) {
                     if (res.status === 404) {
                         alert("Data penyetoran dengan ID tersebut tidak ditemukan.");
-                        window.location.href = "waste_history.html"; // Redirect to history page
+                        window.location.href = "waste_history.html";
                         return;
                     } else if (res.status === 401) {
                         alert("Otorisasi gagal. Silakan login kembali.");
-                        window.location.href = "index.html"; // Redirect to login
+                        window.location.href = "index.html";
                         return;
                     } else {
                         throw new Error(`Gagal mengambil data: ${res.status} ${res.statusText}`);
@@ -229,10 +805,10 @@
                 const result = await res.json();
                 if (result.status === "success") {
                     const wasteRecord = result.data;
-                    console.log("Waste Record Data:", wasteRecord);
                     document.getElementById("locationId").value = wasteRecord.location_id;
                     document.getElementById("wasteId").value = wasteRecord.waste_id;
                     document.getElementById("weight").value = wasteRecord.weight;
+<<<<<<< HEAD
                     if (wasteRecord.date_collected) {
                         document.getElementById("dateCollected").value = wasteRecord.date_collected.split('T')[0]; // Format date
                     } else {
@@ -244,6 +820,14 @@
                             document.getElementById('imagePreview').style.display = 'block';
                         }
 
+=======
+                    document.getElementById("dateCollected").value = wasteRecord.date_collected;
+                    if (wasteRecord.image_url) {
+                        document.getElementById('imagePreview').src = wasteRecord.image_url;
+                        document.getElementById('imagePreview').style.display = 'block';
+                    }
+                    validateForm();
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
                 } else {
                     alert("Failed to load waste record data: " + result.message);
                 }
@@ -259,13 +843,23 @@
                 return;
             }
 
+<<<<<<< HEAD
+=======
+            const container = document.querySelector('.container');
+            container.classList.add('loading');
+
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
             const locationId = document.getElementById("locationId").value;
             const wasteId = document.getElementById("wasteId").value;
             const weight = document.getElementById("weight").value;
             const dateCollected = document.getElementById("dateCollected").value;
+<<<<<<< HEAD
             // if (!isUpdateMode) {
                 const imageFile = document.getElementById("image").files[0];
             // }
+=======
+            const imageFile = document.getElementById("image").files[0];
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
 
             try {
                 const formData = new FormData();
@@ -273,11 +867,17 @@
                 formData.append("waste_id", wasteId);
                 formData.append("weight", weight);
                 formData.append("date_collected", dateCollected);
+<<<<<<< HEAD
                 // if (!isUpdateMode) {
                     if (imageFile) {
                         formData.append("image", imageFile);
                     }
                 // }
+=======
+                if (imageFile) {
+                    formData.append("image", imageFile);
+                }
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6
 
                 const method = isUpdateMode ? "PUT" : "POST";
                 const endpoint = isUpdateMode ? `${BASE_URL}/waste-record/${wasteRecordId}` :
@@ -293,9 +893,17 @@
 
                 const result = await res.json();
                 if (!res.ok) throw new Error(result.message || "Failed to create/update waste record");
-                alert("Waste record berhasil " + (isUpdateMode ? "diperbarui" : "dibuat"));
-                window.location.href = "waste_history.html";
+                
+                // Success animation
+                currentStep = totalSteps;
+                updateProgress();
+                
+                setTimeout(() => {
+                    alert("Waste record berhasil " + (isUpdateMode ? "diperbarui" : "dibuat"));
+                    window.location.href = "waste_history.html";
+                }, 500);
             } catch (err) {
+                container.classList.remove('loading');
                 alert("Error: " + err.message);
             }
         });
@@ -306,15 +914,30 @@
             loadLocations();
 
             if (isUpdateMode) {
-                document.getElementById("pageTitle").textContent = "✏️ Edit Waste Record";
-                document.getElementById("saveButton").textContent = "💾 Update";
+                document.getElementById("pageTitle").innerHTML = '<i class="fas fa-edit"></i> Edit Waste Record';
+                document.getElementById("saveButton").innerHTML = '<i class="fas fa-save"></i> Update Data';
                 loadWasteRecordData();
             } else {
-                document.getElementById("pageTitle").textContent = "🗑️ Create Waste Record";
-                document.getElementById("saveButton").textContent = "💾 Simpan";
+                document.getElementById("pageTitle").innerHTML = '<i class="fas fa-plus-circle"></i> Tambah Waste Record';
+                document.getElementById("saveButton").innerHTML = '<i class="fas fa-save"></i> Simpan Data';
             }
+
+<<<<<<< HEAD
+        initializePage();
+    </script>
+    <script src="assets/js/loadNavbar.js"></script>
+=======
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById("dateCollected").value = today;
+            
+            updateProgress();
         }
 
         initializePage();
     </script>
     <script src="assets/js/loadNavbar.js"></script>
+</body>
+
+</html>
+>>>>>>> 1c4ec76cb134df28d8906b0e952638ae8dd9fef6

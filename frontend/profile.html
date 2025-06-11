@@ -20,13 +20,6 @@
         <strong>Loading...</strong>
       </div>
 
-      <div class="stats-card" id="profileLevelBadge">
-        <div class="stats-number">-</div>
-        <div>Level</div>
-      </div>
-
-      <div class="mockup-item" id="profileBadges">Loading badges...</div>
-
       <button class="mockup-button" id="btnChangePhoto">
         📸 Ganti Foto Profil
       </button>
@@ -79,20 +72,7 @@
             <small>${data.eco_points || "0"} Eco Points</small>
           `;
 
-        const levelBadge = document.getElementById("profileLevelBadge");
-        levelBadge.querySelector(".stats-number").textContent =
-          data.level ?? "-";
-        levelBadge.querySelector("div:last-child").textContent =
-          "Eco Warrior";
-
-        const badgesEl = document.getElementById("profileBadges");
-        if (data.badges && data.badges.length > 0) {
-          badgesEl.innerHTML =
-            "🏅 <strong>Badges Collected:</strong><br>" +
-            data.badges.map((b) => b).join(" | ");
-        } else {
-          badgesEl.textContent = "Belum ada badges";
-        }
+        
       } catch (error) {
         alert(error.message);
       }
